@@ -604,7 +604,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .tour-c h3{font-size:1.15rem}.tour-c p:not(.cnt){color:var(--mu);font-size:.88rem}
 
 /* ---------- 7 · responsive ---------- */
-@media (max-width:1280px){
+@media (max-width:1180px){
   .prj{grid-template-columns:minmax(230px,280px) minmax(0,1fr);grid-template-areas:"l r" "l i";height:auto}
   .px-info{overflow:visible}
   .px-stage{min-height:380px}

@@ -1,22 +1,48 @@
 # Jena Benisse Redondo — The Living Canvas (interactive portfolio)
 
-Multi-view portfolio (no endless scrolling). Hash routes: `#/home`, `#/about`, `#/education`, `#/skills`,
-`#/projects/2`, `#/certificates/3`, `#/experience`, `#/resume`, `#/contact`.
+A nine-page, multi-view portfolio built with plain **HTML, CSS and vanilla JavaScript** (no framework, no build step).
 
-## What's new in this redesign
-- **Cinematic intro "Enter Jena's World"** (`js/intro.js`): gate ("Wake the canvas" seed + a live sound line you tap to tune in; sound is off by default) → first spark → cartoon world with Sprig → name reveal → your real photograph revealed in the centre → "Welcome to my world." + a **slide-to-open** control (drag the knob, or tap / press Enter). Skippable (button or Esc). Shown on first visit only (`localStorage jbr-seen`); replay from the Discovery Portal or the sound panel. Add `?intro` to the URL to force it.
-- **Original sound** (`js/audio.js`): every sound and the music are synthesized live with Web Audio — no audio files, no licensing. Never autoplays; music, effects, volume, mute, visualizer; preferences saved (`jbr-audio`).
-- **Centered portrait hero** (photo enlarged ~15–20% in this version, still fits 1366×768 without extra scrolling) with oversized layered type, floating stickers, 3D tilt and light (`css/living.css`).
-- **Discovery Portal** (`js/portal.js`) replaces the terminal and command palette: a map of rooms plus a shelf of projects, certificates, skills and quick actions. Press **P** or Ctrl+K.
-- **Cross-section transitions**: a sticker travels across the wipe and the next page's big word settles into its backdrop.
-- **Cinematic polish** (`css/pages.css`): letterbox bars, light trail, film grain, rays, cartoon-Jena → real photo reveal with flash and riser sound, mouse parallax, progress line.
-- **Inside the site**: drifting aurora backdrops, grain, handwritten asides per page, staggered page entrances, scrapbook About, exhibition-style Projects, gallery-style Certificates, custom cursor ring.
-- **Sprig** companion, **achievements**, magnetic typography, easter eggs, About field-note card.
-- Your own cartoon pictures: see `images/cartoon/README.txt` (none were found in the original zip, so Sprig and the stickers are original SVG drawings, not likenesses).
+Pages: Home · About · Education · Skills · Projects · Certificates · Experience · Resume · Contact.
 
-## Run / deploy
-- **Laragon:** copy to `C:\laragon\www\portfolio` → `http://portfolio.test/`.
-- **GitHub Pages:** push to `main`; workflow in `.github/workflows/github-pages.yml`.
-- Content lives in `js/data.js`. Original files are in `_original-backup/` (previous index.html, style.css, main.js).
-- Shortcuts: P portal · [ ] prev/next · 1–9 jump · G visual index · T theme · ? tour.
-- Photographs, certificates (PDF + images), resume and all text are unchanged.
+## Project structure
+
+```
+index.html          single entry point (all nine pages + overlays)
+css/style.css       base layout, components, responsive rules
+css/living.css      Living Canvas layer (intro, Sprig, backdrops, transitions)
+css/pages.css       page polish + final fit rules (laptop heights, Sprig bubble)
+js/data.js          all content: projects, certificates, experience, skills
+js/main.js          routing, pages, viewers, forms, keyboard shortcuts
+js/intro.js         cinematic intro (skip / slide-to-open / replay)
+js/audio.js         opt-in sound system (no autoplay)
+js/living.js, art.js, pages.js, portal.js   transitions, illustrations, page logic, Discovery Portal
+images/  certificates/  resume/             real assets
+_original-backup/   untouched copies of the earlier files
+```
+
+## Run locally (Laragon or any static server)
+
+1. Copy the folder into `C:\laragon\www\portfolio`.
+2. Start Laragon → open `http://portfolio.test/` (or `http://localhost/portfolio/`).
+3. Any static server also works, e.g. `python -m http.server 8000` then open `http://localhost:8000`.
+
+Open it through a server rather than double-clicking `index.html`, so the PDF previews load correctly.
+Fonts and icons load from Google Fonts / Font Awesome CDNs, so an internet connection is needed for the intended look.
+
+## Deploy to GitHub Pages
+
+1. Create a repository and push this folder to the `main` branch.
+2. In **Settings → Pages**, set **Source** to **GitHub Actions**.
+3. The included workflow (`.github/workflows/github-pages.yml`) publishes the site on every push.
+   All paths are relative, so it works under `https://<user>.github.io/<repo>/`.
+
+## Useful URLs and shortcuts
+
+- Pages: `#/home`, `#/about`, `#/education`, `#/skills`, `#/projects/3`, `#/certificates/5`, `#/experience`, `#/resume`, `#/contact`
+- Replay the intro: add `?intro` to the URL, or use the Discovery Portal.
+- Keys: `[` `]` previous/next · `1`–`9` jump to a page · `P` portal · `G` directory · `T` theme · `Esc` close.
+- Preferences (theme, sound, effects, intro seen) are stored in `localStorage`.
+
+## Updating content
+
+Projects, certificates, skills and experience live in `js/data.js`. Replace files in `certificates/` and `resume/` keeping the same filenames, or update the paths in `data.js`.
