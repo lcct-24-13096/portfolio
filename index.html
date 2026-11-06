@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Jena Benisse Redondo | IT Portfolio</title>
+<meta name="description" content="Portfolio of Jena Benisse Redondo, a BS Information Technology student at La Consolacion College Tanauan — web development, databases, networking, system development, projects, and certificates.">
+<meta name="theme-color" content="#081226">
+<meta name="author" content="Jena Benisse Redondo">
+<meta name="twitter:card" content="summary">
+<meta property="og:title" content="Jena Benisse Redondo | IT Portfolio">
+<meta property="og:description" content="BSIT student building practical web systems, databases and networks.">
+<meta property="og:type" content="website">
+<script>
+/* Runs before paint so there is no theme flash. localStorage keys kept from the original site: jbr-theme, jbr-calm */
+try{var d=document.documentElement,t=localStorage.getItem('jbr-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');d.dataset.theme=t;d.classList.add('js');
+if(localStorage.getItem('jbr-calm')==='on')d.classList.add('calm');if(localStorage.getItem('jbr-light')==='off')d.classList.add('nolight');
+if(!localStorage.getItem('jbr-seen')||/[?&]intro/.test(location.search))d.classList.add('intro-on')}catch(e){document.documentElement.classList.add('js')}
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23081226'/%3E%3Ctext x='32' y='45' font-size='34' font-weight='800' text-anchor='middle' fill='%2322C55E' font-family='Arial'%3EJ%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Jena Benisse Redondo","jobTitle":"BS Information Technology Student","email":"jenabenisseredondo523@gmail.com","telephone":"+639665207724","address":{"@type":"PostalAddress","addressLocality":"Tanauan City","addressRegion":"Batangas","addressCountry":"PH"},"alumniOf":"La Consolacion College Tanauan","url":"https://lcct-24-13096.github.io/portfolio/","sameAs":["https://ph.linkedin.com/in/jena-benisse-redondo-267106449"]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Manrope:wght@300..800&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/living.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+<a class="skip" href="#stage">Skip to content</a>
+
+<!-- CINEMATIC INTRO (built by js/intro.js) -->
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Introduction: Enter Jena’s World" hidden></div>
+
+<!-- signature page transition -->
+<div class="tx" id="tx" aria-hidden="true"><i></i><i></i><i></i><i></i><div class="tx-l"><b id="txn">01</b><span id="txl">Home</span></div></div>
+<div class="glow" id="glow" aria-hidden="true"></div>
+
+<!-- TOP BAR -->
+<header class="top" id="top">
+  <a class="brand" id="brand" href="#/home" aria-label="Jena Benisse Redondo — home"><b>JBR</b><span>Signature identity</span></a>
+  <p class="where" aria-hidden="true"><span id="wn">01</span><i>/09</i><em id="wt">Home</em></p>
+  <div class="top-r">
+    <button class="ib" id="audBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="aud" aria-label="Sound settings" data-tip="Sound"><i class="fa-solid fa-volume-xmark"></i></button>
+    <button class="ib hide-s" id="tourBtn" type="button" aria-label="Start guided discovery tour" data-tip="Guided tour"><i class="fa-solid fa-route"></i></button>
+    <button class="ib hide-s" id="fxBtn" type="button" aria-pressed="false" aria-label="Toggle motion effects" data-tip="Effects"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+    <button class="ib" id="th" type="button" aria-label="Toggle dark or light mode" data-tip="Theme  T"><i class="fa-solid fa-moon"></i></button>
+    <button class="ib" id="dirBtn" type="button" aria-haspopup="dialog" aria-label="Open the portfolio directory" data-tip="Directory  G"><i class="fa-solid fa-table-cells-large"></i></button>
+    <a class="bt bt-s hide-m" href="resume/Jena-Redondo-Resume.pdf" download="Jena-Redondo-Curriculum-Vitae.pdf" data-mag><i class="fa-solid fa-download"></i> Download Curriculum Vitae</a>
+    <button class="bt bt-s bt-p" id="portalBtn" type="button" aria-haspopup="dialog" aria-expanded="false" data-mag><i class="fa-solid fa-compass"></i><span class="hide-s">Discovery Portal</span></button>
+  </div>
+  <span class="prog" id="prog"></span>
+</header>
+
+<nav class="spine" id="spine" aria-label="Portfolio pages"><span class="spine-ptr" id="spinePtr"></span></nav>
+<nav class="tabbar" id="tabbar" aria-label="Quick navigation"></nav>
+
+<main id="stage" tabindex="-1">
+
+<!-- ============ 01 HOME ============ -->
+<section class="pg" id="pg-home" data-route="home" aria-label="Home">
+  <div class="pg-in home">
+    <div class="hx">
+      <div class="hx-top"><div class="pills"><span class="pill"><i></i> Open to Learning &amp; Building</span><span class="pill pill-ojt"><i></i> Open for OJT / Internship</span></div></div>
+      <div class="hx-l">
+        <p class="hi">Hello, I’m</p>
+        <p class="role"><span id="role">BS Information Technology Student</span><i class="caret"></i></p>
+        <p class="rl">BSIT Student · Aspiring Web &amp; Systems Developer</p>
+        <p class="lead2">I’m a Bachelor of Science in Information Technology student at La Consolacion College Tanauan. I enjoy building websites, developing practical systems, working with databases, exploring networking, and turning ideas into useful digital solutions.</p>
+      </div>
+      <figure class="sig" id="sig">
+        <h1 class="nm" id="nm" aria-label="Jena Benisse Redondo"><span class="nl" aria-hidden="true">Jena</span><span class="nl" aria-hidden="true">Benisse</span><span class="nl o" aria-hidden="true">Redondo</span></h1>
+        <div class="sig-stage" id="sigStage">
+          <span class="sig-back" aria-hidden="true"></span>
+          <span class="sig-ghost" aria-hidden="true"></span>
+          <svg class="sig-draw" viewBox="0 0 100 125" preserveAspectRatio="none" aria-hidden="true"><path d="M10 .4H99.6V110L90 124.6H.4V15Z" pathLength="1"/></svg>
+          <button class="sig-win" id="sigWin" type="button" data-cursor="Expand" aria-label="Open the photo explorer">
+            <span class="sig-ph" id="sigPh"></span>
+            <span class="sig-light" aria-hidden="true"></span>
+            <i class="c c1"></i><i class="c c2"></i><i class="c c3"></i><i class="c c4"></i>
+            <span class="cntr" id="cntr">01 / 04</span><span class="pbar" id="pbar"></span>
+          </button>
+          <span class="ftag t1" data-p="14"><i class="fa-brands fa-html5"></i>HTML5</span><span class="ftag t2" data-p="22"><i class="fa-brands fa-php"></i>PHP</span><span class="ftag t3" data-p="30"><i class="fa-solid fa-database"></i>MySQL</span><span class="ftag t4" data-p="38"><i class="fa-solid fa-network-wired"></i>Cisco</span><span class="ftag t5" data-p="18"><i class="fa-brands fa-js"></i>JavaScript</span>
+          <span class="hs " data-fly="star" data-s="star"></span><span class="hs " data-fly="laptop" data-s="laptop"></span><span class="hs " data-fly="bolt" data-s="bolt"></span><span class="hs " data-fly="db" data-s="db"></span><span class="hs " data-fly="net" data-s="net"></span><span class="hs " data-fly="cap" data-s="cap"></span>
+          <span class="hs hs-note n1" aria-hidden="true">hi, that’s me!</span>
+          <div class="rbadge" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="cp" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs><text><textPath href="#cp">OPEN FOR OJT • WEB &amp; SYSTEMS • BSIT •</textPath></text></svg><b><i class="fa-solid fa-expand"></i></b></div>
+        </div>
+        <figcaption class="sig-tag"><b>Jena Benisse Redondo</b><span>BSIT · La Consolacion College Tanauan</span></figcaption>
+      </figure>
+      <div class="hx-r">
+        <ul class="kw"><li><i class="fa-solid fa-code"></i>Web Development</li><li><i class="fa-solid fa-database"></i>Database Systems</li><li><i class="fa-solid fa-network-wired"></i>Networking</li></ul>
+        <div class="avail"><span class="dotg"></span><div><b>Open for OJT · Internship</b><small>Tanauan, Batangas · <span id="lt2">--</span> local time</small></div></div>
+        <div class="looks" id="looks" role="group" aria-label="Choose photo"></div>
+        <div class="soc"><a class="ib" href="mailto:jenabenisseredondo523@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a><a class="ib" href="#/contact" aria-label="Contact info"><i class="fa-solid fa-address-card"></i></a><a class="ib" href="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" target="_blank" rel="noopener" aria-label="LinkedIn profile (opens in a new tab)"><i class="fa-brands fa-linkedin-in"></i></a><a class="ib" href="resume/Jena-Redondo-Resume.pdf" download="Jena-Redondo-Curriculum-Vitae.pdf" aria-label="Download Curriculum Vitae"><i class="fa-solid fa-file-arrow-down"></i></a></div>
+      </div>
+      <div class="cta hx-cta"><a class="bt bt-p" href="#/projects" data-mag><i class="fa-solid fa-code"></i> Explore My Work</a><a class="bt bt-o" href="#/certificates" data-mag><i class="fa-solid fa-award"></i> View Certificates</a><a class="bt bt-o" href="#/contact" data-mag><i class="fa-regular fa-paper-plane"></i> Contact Me</a></div>
+    </div>
+    <div class="home-b">
+      <div class="ledger" id="ledger">
+        <div><b data-n="8">8</b><span>Projects</span><small>Academic and personal systems built through hands-on learning.</small></div>
+        <div><b data-n="8">8</b><span>Certificates</span><small>Learning milestones covering web development and networking.</small></div>
+        <div><b><i data-n="7">7</i>+</b><span>Core areas</span><small>Development, databases, networking, systems, and technology exploration.</small></div>
+        <div><b>∞</b><span>Growth</span><small>Continuously learning and improving through projects and practice.</small></div>
+      </div>
+      <button class="spot" id="spot" type="button" data-cursor="Open">
+        <span class="spot-ph" id="spotPh"></span>
+        <span class="spot-t"><small>Featured project spotlight</small><b id="spotT">Knowledge Dash</b><em id="spotD"></em></span>
+        <span class="spot-go"><i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 ABOUT ============ -->
+<section class="pg" id="pg-about" data-route="about" aria-label="About" hidden>
+  <div class="pg-in about">
+    <header class="ph"><div><p class="eb">About</p><h2 class="pt">A little about myself</h2></div>
+      <div class="seg" id="abSeg" role="tablist" aria-label="About sections"><button class="on" role="tab" aria-selected="true" data-ab="story">Story</button><button role="tab" aria-selected="false" data-ab="now">Right now</button><button role="tab" aria-selected="false" data-ab="beyond">Beyond the code</button></div></header>
+
+    <!-- story -->
+    <div class="ab-v on" data-abv="story">
+      <div class="ab-g">
+        <div class="ab-ph">
+          <figure class="arch" data-zoom="0">
+            <span class="arch-b"></span>
+            <img src="images/casual-1.jpg" alt="Jena Benisse Redondo smiling in a casual portrait" width="900" height="1004" style="object-position:47% 28%">
+            <figcaption><b>Jena Benisse Redondo</b><span>BSIT · La Consolacion College Tanauan</span></figcaption>
+          </figure>
+          <figure class="arch-2"><img src="images/profile.jpg" alt="Formal portrait of Jena" width="900" height="638" style="object-position:50% 14%"></figure>
+        </div>
+        <div class="ab-t">
+          <p class="big">Hello! I am <strong>Jena Benisse Redondo</strong>, currently taking Bachelor of Science in Information Technology at La Consolacion College Tanauan. A motivated and detail-oriented individual with a strong interest in technology and developing practical solutions.</p>
+          <div class="chap" id="chap">
+            <article class="on"><button type="button" aria-expanded="true"><span>Interests</span><i class="plus" aria-hidden="true"></i></button><div class="chap-x"><div><p>I am interested in web development, user interface design, database management, system development, and computer networking. I enjoy learning technologies that allow me to build practical and user-friendly solutions.</p></div></div></article>
+            <article><button type="button" aria-expanded="false"><span>Hands-on experience</span><i class="plus" aria-hidden="true"></i></button><div class="chap-x"><div><p>Through my academic projects, I have gained experience with <strong>HTML, CSS, JavaScript, PHP, MySQL, and CRUD-based systems.</strong> I have also completed networking courses covering network communication, addressing, device configuration, troubleshooting, and network support.</p></div></div></article>
+            <article><button type="button" aria-expanded="false"><span>Beyond web and databases</span><i class="plus" aria-hidden="true"></i></button><div class="chap-x"><div><p>I also had the opportunity to attend a robotics workshop, which allowed me to explore robotics and technology beyond regular web and database development. I am still continuing to learn and explore this area as part of my growth as an IT student.</p></div></div></article>
+            <article><button type="button" aria-expanded="false"><span>My goal</span><i class="plus" aria-hidden="true"></i></button><div class="chap-x"><div><p>My goal is to continuously improve my technical skills, gain more hands-on experience, and create digital solutions that are useful, reliable, and easy to understand — while contributing positively to a professional work environment.</p></div></div></article>
+          </div>
+          <button class="more" id="chapAll" type="button" aria-pressed="false"><span>Expand all</span><i class="fa-solid fa-angles-down"></i></button>
+          <ul class="traits" aria-label="Strengths"><li>Communication</li><li>Teamwork</li><li>Problem-Solving</li><li>Time Management</li><li>Adaptability</li><li>Attention to Detail</li></ul>
+          <ul class="mot" aria-label="How I learn">
+            <li tabindex="0"><i class="fa-solid fa-lightbulb"></i><b>Curious Learner</b><span>Always exploring new technologies</span></li>
+            <li tabindex="0"><i class="fa-solid fa-laptop-code"></i><b>Hands-on Builder</b><span>Learning through real projects</span></li>
+            <li tabindex="0"><i class="fa-solid fa-chart-line"></i><b>Continuous Growth</b><span>Improving one skill at a time</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- now -->
+    <div class="ab-v" data-abv="now" hidden>
+      <div class="now-g">
+        <div class="pcard" id="pcard">
+          <span class="pc-stamp" aria-hidden="true">BSIT</span>
+          <p class="pc-k">Field notes from Jena</p>
+          <dl>
+            <div><dt>Name</dt><dd>Jena Benisse Redondo</dd></div>
+            <div><dt>Role</dt><dd>BSIT student · aspiring web &amp; systems developer</dd></div>
+            <div><dt>School</dt><dd>La Consolacion College Tanauan</dd></div>
+            <div><dt>Skills</dt><dd>HTML · CSS · JavaScript · PHP · MySQL · Networking · UI/UX</dd></div>
+            <div><dt>Exploring</dt><dd>Networking · Robotics</dd></div>
+            <div><dt>Open to</dt><dd>Learning &amp; building — internships, collaborations, projects</dd></div>
+          </dl>
+          <p class="pc-note">“Let’s build something useful.”</p>
+        </div>
+        <div class="now"><h3 class="sub">Right now</h3><ul>
+          <li><i class="fa-solid fa-graduation-cap"></i><span><b>Studying</b>3rd Year, 1st Semester — BSIT</span></li>
+          <li><i class="fa-solid fa-code"></i><span><b>Building</b>Web systems &amp; database apps</span></li>
+          <li><i class="fa-solid fa-network-wired"></i><span><b>Exploring</b>Networking &amp; robotics</span></li>
+          <li><i class="fa-solid fa-location-dot"></i><span><b>Based in</b>Tanauan City, Batangas</span></li></ul>
+          <a class="bt bt-o bt-s" href="#/education"><i class="fa-solid fa-graduation-cap"></i> See my learning journey</a></div>
+      </div>
+    </div>
+
+    <!-- beyond -->
+    <div class="ab-v" data-abv="beyond" hidden>
+      <div class="bey-g">
+        <div class="film" id="film" aria-label="Personal photographs"></div>
+        <div class="bey-r">
+          <h3 class="sub">Personal interests</h3><p class="rsub">Beyond the code.</p>
+          <ul class="int"><li tabindex="0"><i class="fa-solid fa-music"></i>Listening to Music</li><li tabindex="0"><i class="fa-solid fa-film"></i>Watching Movies</li><li tabindex="0"><i class="fa-solid fa-gamepad"></i>Playing Games</li><li tabindex="0"><i class="fa-solid fa-globe"></i>Browsing the Internet</li></ul>
+          <button class="bt bt-o" id="openPhotos" type="button"><i class="fa-solid fa-images"></i> Open the photo explorer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 EDUCATION ============ -->
+<section class="pg" id="pg-education" data-route="education" aria-label="Education" hidden>
+  <div class="pg-in edu">
+    <header class="ph"><div><p class="eb">Education</p><h2 class="pt">Learning journey</h2><p class="rsub">My journey continues through education, hands-on projects, certifications, and continuous technical exploration.</p></div>
+      <div class="seg" id="edSeg" role="tablist" aria-label="Education views"><button class="on" role="tab" aria-selected="true" data-ed="journey">Journey</button><button role="tab" aria-selected="false" data-ed="course">Technical coursework</button></div></header>
+    <div class="ed-v on" data-edv="journey">
+      <div class="jr">
+        <div class="jr-rail" id="jrRail" role="tablist" aria-label="Milestones" aria-orientation="vertical"><svg class="jr-line" id="jrLine" aria-hidden="true"><line id="jrBase" x1="0" y1="0" x2="0" y2="0"/><line id="jrFill" x1="0" y1="0" x2="0" y2="0"/></svg></div>
+        <div class="jr-d" id="jrD" aria-live="polite"></div>
+      </div>
+      <article class="file"><span class="hole" aria-hidden="true"></span><div class="ic"><i class="fa-solid fa-graduation-cap"></i></div><div><h3>Current education</h3><p><b>Bachelor of Science in Information Technology</b> — La Consolacion College Tanauan (2024 – Present). Academic learning focused on programming, web development, databases, networking, system development, and practical technology applications.</p><ul class="chips"><li><i class="fa-solid fa-code"></i> Programming</li><li><i class="fa-solid fa-database"></i> Databases</li><li><i class="fa-solid fa-network-wired"></i> Networking</li><li><i class="fa-solid fa-window-maximize"></i> Web Development</li></ul></div></article>
+    </div>
+    <div class="ed-v" data-edv="course" hidden>
+      <div class="cw-h"><p class="rsub">A look at the coursework I have completed across four semesters, and the subjects I am currently taking in 3rd Year, 1st Semester.</p>
+        <div class="tabs" id="ctabs" role="tablist"><button class="on" data-t="0" role="tab" aria-selected="true"><i class="fa-solid fa-circle-check"></i> Completed · 1st–2nd Year</button><button data-t="1" role="tab" aria-selected="false"><i class="fa-solid fa-spinner"></i> Currently taking · 3rd Year, 1st Sem</button></div></div>
+      <div class="cw" id="cw" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 SKILLS ============ -->
+<section class="pg" id="pg-skills" data-route="skills" aria-label="Skills" hidden>
+  <div class="pg-in skl">
+    <header class="ph"><div><p class="eb">Skills</p><h2 class="pt">My skills</h2><p class="rsub">Core technology stack — select a cluster or a node to explore.</p></div></header>
+    <div class="sk-g">
+      <div class="sk-stage" id="skStage" role="group" aria-label="Interactive skills constellation"><svg id="skLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <aside class="sk-info">
+        <div class="seg seg-s" id="skSeg" role="tablist"><button class="on" role="tab" aria-selected="true" data-sk="detail">Skill details</button><button role="tab" aria-selected="false" data-sk="grow">Growing now</button></div>
+        <div class="sk-p on" data-skp="detail" aria-live="polite"><p class="cat" id="skCat">Cluster · All</p><h3 id="skName">Pick a node</h3><p id="skDesc">Select any skill in the constellation to read how I use it. Use the clusters to filter.</p><div class="tabs" id="stabs"></div><h4 class="sk-u">Tech universe</h4><ul class="chips" id="skU"></ul>
+          <p class="note"><i class="fa-solid fa-circle-info"></i><span>My skills continue to develop through academic projects, hands-on practice, certifications, and continuous exploration of technology.</span></p></div>
+        <div class="sk-p" data-skp="grow" hidden><h3>Currently learning &amp; growing</h3><p>I believe that becoming better in technology comes from continuously learning, building, testing, and improving.</p><p>My current focus is strengthening the skills I already use while gaining more practical experience through projects, academic work, and hands-on exploration.</p>
+          <ol class="grow-r"><li><i class="fa-solid fa-code"></i><div><h4>Web Development</h4><p>Improving frontend interfaces, responsive layouts, and interactive web functionality.</p></div></li><li><i class="fa-solid fa-database"></i><div><h4>Database &amp; Systems</h4><p>Strengthening practical database-driven applications and system development.</p></div></li><li><i class="fa-solid fa-network-wired"></i><div><h4>Networking</h4><p>Continuing to build knowledge in networking, troubleshooting, and secure connectivity.</p></div></li><li><i class="fa-solid fa-robot"></i><div><h4>Technology Exploration</h4><p>Exploring areas such as robotics and other technology applications through hands-on learning.</p></div></li></ol></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 PROJECTS ============ -->
+<section class="pg" id="pg-projects" data-route="projects" aria-label="Projects" hidden>
+  <div class="pg-in prj">
+    <aside class="px-l">
+      <header><p class="eb">Projects</p><h2 class="pt">Featured projects</h2><p class="rsub">A collection of academic and personal projects where I apply programming, database, interface, and system development concepts.</p></header>
+      <div class="px-tools"><label class="sbox"><i class="fa-solid fa-magnifying-glass"></i><input id="pq" type="search" placeholder="Search projects or technologies" autocomplete="off" aria-label="Search projects"></label><button class="chip-b" id="cmpT" type="button" aria-pressed="false"><i class="fa-solid fa-code-compare"></i> Compare</button></div>
+      <div class="tabs" id="fl" role="group" aria-label="Filter projects"></div>
+      <p class="empty" id="pxEmpty" hidden>No project matches that search. Try another word, such as PHP or game.</p>
+      <ol class="px-list" id="pxList"></ol>
+      <div class="cmp-bar" id="cmpBar" hidden><span id="cmpN">Pick 2 or 3 projects</span><button class="bt bt-s bt-p" id="cmpGo" type="button" disabled>Compare selected</button><button class="bt bt-s bt-o" id="cmpClr" type="button">Clear</button></div>
+    </aside>
+    <div class="px-r">
+      <div class="px-stage" id="pxStage" data-cursor="Open"></div>
+      <div class="px-nav"><button class="ib" id="pxPrev" type="button" aria-label="Previous project"><i class="fa-solid fa-arrow-left"></i></button><span class="cnt" id="pxCnt">01 / 08</span><button class="ib" id="pxNext" type="button" aria-label="Next project"><i class="fa-solid fa-arrow-right"></i></button></div>
+    </div>
+    <div class="px-info" id="pxInfo" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ 06 CERTIFICATES ============ -->
+<section class="pg" id="pg-certificates" data-route="certificates" aria-label="Certificates" hidden>
+  <div class="pg-in cert">
+    <header class="ph"><div><p class="eb">Credential vault</p><h2 class="pt">Certifications &amp; learning</h2><p class="rsub">A collection of completed learning milestones reflecting my growing knowledge in web development, networking, system development, and technology. Select a credential to preview it, open the full document, or download your own copy.</p></div>
+      <div class="c-tools"><div class="tabs" id="ctf" role="group" aria-label="Filter certificates"></div><label class="sbox"><i class="fa-solid fa-magnifying-glass"></i><input id="cq" type="search" placeholder="Search certificates" autocomplete="off" aria-label="Search certificates"></label></div></header>
+    <p class="empty" id="cEmpty" hidden>No certificate matches that search. Try Cisco, IPv6, or robotics.</p>
+    <div class="vault" id="vault">
+      <div class="vault-stage">
+        <div class="folder" id="folder"><span class="fl-back"></span><button class="paper" id="vaultPaper" type="button" data-cursor="Inspect" aria-label="Open the selected certificate"><img id="cgImg" alt="" width="660" height="510"><span class="seal" aria-hidden="true"><i class="fa-solid fa-award"></i></span></button><span class="fl-front"><em id="cgNo">01</em></span><span class="fl-flap"></span></div>
+        <div class="cg-nav"><button class="ib" id="cgPrev" type="button" aria-label="Previous certificate"><i class="fa-solid fa-arrow-left"></i></button><span class="cnt" id="cgCnt">01 / 08</span><button class="ib" id="cgNext" type="button" aria-label="Next certificate"><i class="fa-solid fa-arrow-right"></i></button></div>
+      </div>
+      <div class="cg-meta" id="cgMeta" aria-live="polite"></div>
+    </div>
+    <div class="strip" id="strip" role="listbox" aria-label="All certificates"></div>
+  </div>
+</section>
+
+<!-- ============ 07 EXPERIENCE ============ -->
+<section class="pg" id="pg-experience" data-route="experience" aria-label="Achievements and experience" hidden>
+  <div class="pg-in exp">
+    <header class="ph"><div><p class="eb">Achievements &amp; experience</p><h2 class="pt">Experience, workshops &amp; work mode</h2><p class="rsub">Where I have applied what I learn — and how I work.</p></div>
+      <div class="seg" id="exSeg" role="tablist" aria-label="Experience views"><button class="on" role="tab" aria-selected="true" data-ex="records">Experience</button><button role="tab" aria-selected="false" data-ex="build">What I build</button><button role="tab" aria-selected="false" data-ex="ojt">Ready for OJT</button></div></header>
+
+    <div class="ex-v on" data-exv="records">
+      <ol class="rec-l" id="recL">
+        <li class="rec on"><button type="button" aria-expanded="true"><span class="rec-d"><b>2023</b><small>July 2023</small></span><span class="rec-t"><small>Work Immersion</small><h3>IT Department Work Immersion · Creotec Inc.</h3></span><i class="plus" aria-hidden="true"></i></button>
+          <div class="rec-x"><div><ul><li>Assisted with IT-related tasks and developed simple applications, including an Employee Monitoring Board, Payroll Calculator, and BMI Calculator.</li><li>Collaborated with team members to complete assigned projects.</li></ul><p class="tg"><span>Work Immersion</span><span>Applications</span></p></div></div></li>
+        <li class="rec"><button type="button" aria-expanded="false"><span class="rec-d"><b>2026</b><small>ICT Week 2026</small></span><span class="rec-t"><small>Workshop · Robotics</small><h3>Design, Build, Innovate: The Robotics Experience</h3></span><i class="plus" aria-hidden="true"></i></button>
+          <div class="rec-x"><div><p>Certificate of Participation for a robotics workshop presented by First Eduspec Inc. in partnership with La Consolacion College Tanauan during LCCT ICT Week 2026. The workshop introduced hands-on robotics concepts, giving students the chance to explore robotics design and building beyond regular web and database coursework.</p><p class="tg"><span>Robotics</span><span>Hands-on Workshop</span><span>ICT Week 2026</span></p><button class="bt bt-s bt-o" type="button" data-cert="7"><i class="fa-solid fa-award"></i> View this certificate</button></div></div></li>
+        <li class="rec"><button type="button" aria-expanded="false"><span class="rec-d"><b>2026</b><small>IT Week 2026</small></span><span class="rec-t"><small>Seminar · Business &amp; Technology</small><h3>Bridging Business and Technology for the Next Generation</h3></span><i class="plus" aria-hidden="true"></i></button>
+          <div class="rec-x"><div><p>Certificate of Participation for the seminar held in celebration of IT Week 2026 at La Consolacion College Tanauan. The seminar explored how business processes and emerging technology intersect, encouraging IT students to connect technical skills with real-world business needs.</p><p class="tg"><span>IT Week 2026</span><span>Business &amp; Technology</span><span>Seminar</span></p><button class="bt bt-s bt-o" type="button" data-cert="6"><i class="fa-solid fa-award"></i> View this certificate</button></div></div></li>
+      </ol>
+    </div>
+
+    <div class="ex-v" data-exv="build" hidden>
+      <div class="fan" id="fan">
+        <article class="fp on" tabindex="0"><span class="fn">A</span><i class="fa-solid fa-globe"></i><h3>Responsive Websites</h3><p>Clean and responsive web interfaces designed to work across different screen sizes and devices.</p><span class="fs">HTML · CSS · JavaScript</span></article>
+        <article class="fp" tabindex="0"><span class="fn">B</span><i class="fa-solid fa-server"></i><h3>Web-Based Systems</h3><p>Practical systems for organizing information, managing processes, and supporting everyday operations.</p><span class="fs">PHP · CRUD · Systems</span></article>
+        <article class="fp" tabindex="0"><span class="fn">C</span><i class="fa-solid fa-database"></i><h3>Database Applications</h3><p>Database-driven applications that organize, store, retrieve, and manage application information.</p><span class="fs">MySQL · PHP · CRUD</span></article>
+        <article class="fp" tabindex="0"><span class="fn">D</span><i class="fa-solid fa-gears"></i><h3>Practical Systems</h3><p>Information, POS, inventory, and reservation systems developed as hands-on learning projects.</p><span class="fs">Systems · Databases · UI</span></article>
+      </div>
+      <div class="proc" id="proc">
+        <div class="proc-h"><h3 class="sub">How I work</h3><p class="rsub">A simple, clear process so every project stays on track and easy to follow.</p></div>
+        <div class="proc-steps" role="tablist" aria-label="Process steps"><button class="on" role="tab" aria-selected="true" data-s="0"><b>1</b>Understand</button><button role="tab" aria-selected="false" data-s="1"><b>2</b>Plan &amp; design</button><button role="tab" aria-selected="false" data-s="2"><b>3</b>Build</button><button role="tab" aria-selected="false" data-s="3"><b>4</b>Test &amp; refine</button><button role="tab" aria-selected="false" data-s="4"><b>5</b>Deliver</button></div>
+        <div class="proc-d" aria-live="polite"><i class="fa-solid fa-comments" id="pI"></i><p id="pT">Listen to the goal, the users, and what the system or website needs to do.</p></div>
+      </div>
+    </div>
+
+    <div class="ex-v" data-exv="ojt" hidden>
+      <div class="ojt">
+        <div class="ojt-l"><h3 class="ojt-t">Ready for <span>OJT</span></h3><p class="big">I’m looking for an on-the-job training opportunity where I can apply what I’ve learned, contribute to real work, and keep growing alongside a professional team.</p></div>
+        <ul class="ojt-g">
+          <li><i class="fa-solid fa-laptop-code"></i><h4>Web Development</h4><p>Build and maintain responsive pages and interfaces using HTML, CSS, and JavaScript.</p></li>
+          <li><i class="fa-solid fa-database"></i><h4>Systems &amp; Databases</h4><p>Develop PHP and MySQL CRUD systems — from database structure to a clean, usable interface.</p></li>
+          <li><i class="fa-solid fa-network-wired"></i><h4>Networking &amp; IT Support</h4><p>Basic configuration, troubleshooting, and support, backed by Cisco Networking Academy training.</p></li>
+          <li><i class="fa-solid fa-handshake"></i><h4>Teamwork &amp; Reliability</h4><p>Communication, time management, and attention to detail — with prior work immersion at Creotec Inc.</p></li>
+        </ul>
+        <div class="ojt-c"><div><h4>Looking for an OJT intern? Let’s talk.</h4><p>Send me an email or give me a call — I’d love to hear about your team and how I can help.</p></div><div class="cta"><a class="bt bt-p" href="mailto:jenabenisseredondo523@gmail.com" data-mag><i class="fa-solid fa-envelope"></i> Email me</a><a class="bt bt-o" href="tel:+639665207724" data-mag><i class="fa-solid fa-phone"></i> Call me</a><a class="bt bt-o" href="resume/Jena-Redondo-Resume.pdf" download="Jena-Redondo-Curriculum-Vitae.pdf" data-mag><i class="fa-solid fa-download"></i> Curriculum Vitae</a><button class="bt bt-o" type="button" data-act="vcard"><i class="fa-solid fa-address-book"></i> Save contact</button></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 RESUME ============ -->
+<section class="pg" id="pg-resume" data-route="resume" aria-label="Resume and curriculum vitae" hidden>
+  <div class="pg-in cvp">
+    <div class="cv-l">
+      <p class="eb">Curriculum Vitae</p><h2 class="pt">Curriculum Vitae</h2>
+      <p class="big">Everything on this site — education, work immersion, skills, projects with live demos, and certifications — on a single, printable page.</p>
+      <ol class="toc"><li><span>01</span>IT Department Work Immersion — Creotec Inc.</li><li><span>02</span>Knowledge Dash &amp; 8 Sibs Sari-Sari Store POS System</li><li><span>03</span>Web, database, networking &amp; UI/UX skills</li><li><span>04</span>8 certifications from Cisco Networking Academy &amp; LCCT</li></ol>
+      <div class="cta"><a class="bt bt-p" href="resume/Jena-Redondo-Resume.pdf" download="Jena-Redondo-Curriculum-Vitae.pdf" data-mag><i class="fa-solid fa-download"></i> Download Curriculum Vitae</a><button class="bt bt-o" type="button" id="cvView" data-mag><i class="fa-solid fa-expand"></i> View Curriculum Vitae</button><button class="bt bt-o" type="button" id="cvTog" aria-pressed="false" data-mag><i class="fa-solid fa-file-pdf"></i> <span>Live preview</span></button><a class="bt bt-o" href="resume/Jena-Redondo-Resume.pdf" target="_blank" rel="noopener" data-mag><i class="fa-solid fa-arrow-up-right-from-square"></i> Open in new tab</a></div>
+    </div>
+    <div class="cv-r">
+      <div class="doc-wrap" id="docWrap">
+        <button class="doc" id="cvDoc" type="button" data-cursor="View" aria-label="View Curriculum Vitae full screen"><span class="doc-sheet s3"></span><span class="doc-sheet s2"></span><span class="doc-main"><img src="resume/resume-preview.jpg" alt="Preview of Jena Benisse Redondo’s Curriculum Vitae" width="745" height="1053"><i class="fold"></i><i class="scan"></i></span><span class="stamp">Curriculum<br>Vitae</span></button>
+        <div class="doc-live" id="docLive" hidden><iframe id="cvFrame" title="Curriculum Vitae PDF preview"></iframe></div>
+      </div>
+      <p class="doc-cap">Page 1 of 1 · PDF · click to open</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 CONTACT ============ -->
+<section class="pg" id="pg-contact" data-route="contact" aria-label="Contact" hidden>
+  <div class="pg-in ctc">
+    <div class="ct-l">
+      <p class="eb">Contact portal</p>
+      <h2 class="ct-h" id="t-contact">Have a project, opportunity, or idea? <em>Let’s connect.</em></h2>
+      <p class="big">I’m open to learning, collaborating, discussing ideas, and connecting with people interested in technology. Interested in my work? Send me an email.</p>
+      <p class="av"><i></i>Currently focused on learning, building, and growing in IT.</p>
+      <ul class="chips"><li>Websites</li><li>Web-based systems</li><li>Database apps</li><li>OJT / Internship</li><li>Internships</li><li>Collaborations</li></ul>
+      <div class="cards" id="ctCards">
+        <div class="cc" data-tilt><a href="mailto:jenabenisseredondo523@gmail.com" data-cursor="Email"><i class="fa-solid fa-envelope"></i><span><small>Email</small>jenabenisseredondo523@gmail.com</span></a><button class="cp" type="button" data-copy="jenabenisseredondo523@gmail.com" data-what="Email" aria-label="Copy email address"><i class="fa-regular fa-copy"></i></button></div>
+        <div class="cc" data-tilt><a href="tel:+639665207724" data-cursor="Call"><i class="fa-solid fa-phone"></i><span><small>Phone</small>+639665207724</span></a><button class="cp" type="button" data-copy="+639665207724" data-what="Phone number" aria-label="Copy phone number"><i class="fa-regular fa-copy"></i></button></div>
+        <div class="cc" data-tilt><a href="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" target="_blank" rel="noopener" data-cursor="Open"><i class="fa-brands fa-linkedin-in"></i><span><small>LinkedIn</small>jena-benisse-redondo-267106449</span></a><button class="cp" type="button" data-copy="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" data-what="LinkedIn link" aria-label="Copy LinkedIn link"><i class="fa-regular fa-copy"></i></button></div>
+        <div class="cc" data-tilt><div><i class="fa-solid fa-location-dot"></i><span><small>Location</small>Sulpoc, Tanauan City, Batangas, Philippines</span></div></div>
+      </div>
+      <div class="cta"><button class="bt bt-p" id="copy" type="button" data-mag><i class="fa-regular fa-copy"></i> Copy Email</button><a class="bt bt-o" href="mailto:jenabenisseredondo523@gmail.com" data-mag><i class="fa-solid fa-envelope"></i> Send Me an Email</a><button class="bt bt-o" type="button" data-act="vcard" data-mag><i class="fa-solid fa-address-book"></i> Save contact</button></div>
+    </div>
+    <div class="ct-r">
+      <div class="seg" id="ctSeg" role="tablist" aria-label="Contact tools"><button class="on" role="tab" aria-selected="true" data-ct="msg">Send a message</button><button role="tab" aria-selected="false" data-ct="li">LinkedIn</button><button role="tab" aria-selected="false" data-ct="faq">Quick answers</button></div>
+      <div class="ct-v on" data-ctv="msg">
+        <form class="cf" id="cf" novalidate aria-labelledby="cf-t"><h3 id="cf-t">Send a message</h3>
+          <label>Your name<input id="fn" required autocomplete="name" placeholder="Juan Dela Cruz"></label>
+          <label>Your email<input id="fe" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+          <label>I’m interested in<select id="ft"><option>A website</option><option>A web-based system</option><option>A database application</option><option>An internship or opportunity</option><option>A collaboration</option><option>Something else</option></select></label>
+          <label>Message<textarea id="fm" rows="4" required placeholder="Tell me a little about your project or idea…"></textarea></label>
+          <div class="cf-f"><button class="bt bt-p" type="submit" data-mag><i class="fa-regular fa-paper-plane"></i> Send message</button><small>Opens your email app with the message ready to send.</small></div>
+        </form>
+      </div>
+      <div class="ct-v" data-ctv="li" hidden>
+        <div class="li"><div class="li-mark" aria-hidden="true"><i class="fa-brands fa-linkedin-in"></i></div>
+          <div class="li-body"><p class="cat">LinkedIn · Professional presence</p><h3>Jena Benisse Redondo</h3><p>BS Information Technology student at La Consolacion College Tanauan — open for OJT and internship opportunities. Let’s connect professionally.</p><a class="li-url" href="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" target="_blank" rel="noopener"><span>linkedin.com/in/jena-benisse-redondo-267106449</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+          <div class="cta"><a class="bt bt-p" href="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" target="_blank" rel="noopener" data-mag><i class="fa-brands fa-linkedin-in"></i> Connect on LinkedIn</a><a class="bt bt-o" href="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" target="_blank" rel="noopener" data-mag><i class="fa-solid fa-arrow-up-right-from-square"></i> View LinkedIn Profile</a><button class="bt bt-o" type="button" data-copy="https://ph.linkedin.com/in/jena-benisse-redondo-267106449" data-what="LinkedIn link"><i class="fa-regular fa-copy"></i> Copy link</button></div></div></div>
+      </div>
+      <div class="ct-v" data-ctv="faq" hidden>
+        <p class="rsub">The things recruiters and clients usually want to know — all in one place.</p>
+        <div class="faq-t"><label class="sbox"><i class="fa-solid fa-magnifying-glass"></i><input id="fq" type="search" placeholder="Search the questions" autocomplete="off" aria-label="Search the questions"></label><button class="chip-b" id="faqAll" type="button" aria-pressed="false"><i class="fa-solid fa-angles-down"></i> <span>Expand all</span></button></div>
+        <p class="empty" id="fEmpty" hidden>No question matches that search. Try OJT, stack, or certificates.</p>
+        <div class="faq" id="faq-l">
+          <details open><summary>Are you open for OJT or an internship?</summary><div class="fa"><p>Yes. I’m open for OJT / internship opportunities and happy to talk about how I can contribute to your team. The fastest way to reach me is by email or phone.</p></div></details>
+          <details><summary>What can you build?</summary><div class="fa"><p>Responsive websites, PHP and MySQL web-based systems, database applications, and practical systems such as POS, inventory, information, and reservation systems.</p></div></details>
+          <details><summary>What is your tech stack?</summary><div class="fa"><p>HTML, CSS, JavaScript, PHP, and MySQL, plus networking knowledge from Cisco Networking Academy, UI/UX design, and the Microsoft Office Suite.</p></div></details>
+          <details><summary>Do you have any work experience?</summary><div class="fa"><p>I completed an IT Department work immersion at Creotec Inc. in July 2023, where I assisted with IT tasks and developed an Employee Monitoring Board, Payroll Calculator, and BMI Calculator.</p></div></details>
+          <details><summary>Where are you based?</summary><div class="fa"><p>Sulpoc, Tanauan City, Batangas, Philippines. I’m studying BS Information Technology at La Consolacion College Tanauan.</p></div></details>
+          <details><summary>Can I see your certificates and curriculum vitae?</summary><div class="fa"><p>Of course — all 8 certificates can be viewed or downloaded in the Certificates section, and my Curriculum Vitae is available as a PDF in the Curriculum Vitae section.</p></div></details>
+        </div>
+      </div>
+      <p class="ft-n"><b>Jena Benisse Redondo</b> · BS Information Technology Student • La Consolacion College Tanauan<br>© 2026 Jena Benisse Redondo. All Rights Reserved.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- DISCOVERY PORTAL (js/portal.js) -->
+<div class="ov portal" id="portal" role="dialog" aria-modal="true" aria-label="Discovery Portal" hidden>
+  <div class="pt-in">
+    <header class="pt-top"><div><h2>Discovery Portal</h2><p>Step into any room, or pick up something that catches your eye. No typing needed.</p></div>
+      <div class="cta"><button class="bt bt-s bt-p" id="ptRand" type="button"><i class="fa-solid fa-shuffle"></i> Surprise me</button><button class="bt bt-s bt-o" id="ptReplay" type="button"><i class="fa-solid fa-clapperboard"></i> Replay intro</button><button class="bt bt-s bt-o" id="ptx" type="button">Close <kbd>Esc</kbd></button></div></header>
+    <div class="pt-body">
+      <div class="pt-map" id="ptMap"><svg class="pt-lines" id="ptLines" aria-hidden="true"></svg><div class="pt-core" id="ptCore" aria-live="polite"><div class="pt-rings" aria-hidden="true"><i></i><i></i><i></i></div><div class="pt-spr" id="ptSpr"></div><b id="ptName">Choose a room</b><span id="ptDesc">Hover, focus or tap a door to peek inside.</span></div><ul class="pt-rooms" id="ptRooms"></ul></div>
+      <div class="pt-shelf"><div class="seg" id="ptSeg" role="tablist" aria-label="Things to discover"><button class="on" role="tab" aria-selected="true" data-k="projects">Projects</button><button role="tab" aria-selected="false" data-k="certs">Certificates</button><button role="tab" aria-selected="false" data-k="skills">Skills</button><button role="tab" aria-selected="false" data-k="extras">Quick actions</button></div><div class="pt-items" id="ptItems" role="tabpanel"></div></div>
+    </div>
+    <footer class="pal-ft pt-ft"><button class="chip-b" id="palTheme" type="button"><i class="fa-solid fa-circle-half-stroke"></i> Theme: <b>dark</b></button><button class="chip-b" id="palCalm" type="button" aria-pressed="false"><i class="fa-solid fa-spa"></i> Calm mode: <b>off</b></button><button class="chip-b" id="palComfy" type="button" aria-pressed="false"><i class="fa-solid fa-text-height"></i> Comfort text: <b>off</b></button><button class="chip-b" id="palLight" type="button" aria-pressed="true"><i class="fa-solid fa-lightbulb"></i> Cursor light: <b>on</b></button><p class="keys"><kbd>←</kbd><kbd>→</kbd> move between rooms · <kbd>1</kbd>–<kbd>9</kbd> enter a room · <kbd>P</kbd> portal · <kbd>G</kbd> visual index · <kbd>[</kbd> <kbd>]</kbd> prev / next page · <kbd>T</kbd> theme · <kbd>?</kbd> tour</p></footer>
+  </div>
+</div>
+
+<!-- SOUND PANEL (js/living.js) -->
+<div class="aud" id="aud" role="dialog" aria-label="Sound settings" hidden>
+  <div class="aud-h"><b>Sound</b><span id="audState">Off</span></div>
+  <button class="bt bt-s bt-p" id="audOn" type="button"><i class="fa-solid fa-volume-high"></i> <span>Turn sound on</span></button>
+  <div class="aud-row"><button class="chip-b" id="audMus" type="button" aria-pressed="true"><i class="fa-solid fa-music"></i> Music: <b>on</b></button><button class="chip-b" id="audSfx" type="button" aria-pressed="true"><i class="fa-solid fa-wand-magic-sparkles"></i> Effects: <b>on</b></button><button class="chip-b" id="audMute" type="button" aria-pressed="false"><i class="fa-solid fa-volume-xmark"></i> Mute: <b>off</b></button></div>
+  <label class="aud-vol"><span>Volume</span><input id="audVol" type="range" min="0" max="100" value="70" aria-label="Volume"></label>
+  <canvas id="audViz" width="260" height="48" aria-hidden="true"></canvas>
+  <button class="bt bt-s bt-o" id="audReplay" type="button"><i class="fa-solid fa-clapperboard"></i> Replay introduction</button>
+</div>
+
+<!-- DIRECTORY -->
+<div class="ov dir" id="dir" role="dialog" aria-modal="true" aria-label="Portfolio directory" hidden>
+  <div class="dir-in">
+    <div class="dir-top"><div><h2>Portfolio directory</h2><p>Every page opens directly — no scrolling through the others.</p></div><div class="cta"><button class="bt bt-s bt-p" id="dirRand" type="button"><i class="fa-solid fa-shuffle"></i> Surprise me</button><button class="bt bt-s bt-o dir-m" id="dirPortal" type="button"><i class="fa-solid fa-compass"></i> Portal</button><button class="bt bt-s bt-o dir-m" id="dirTour" type="button"><i class="fa-solid fa-route"></i> Tour</button><button class="bt bt-s bt-o" id="dirx" type="button">Close <kbd>Esc</kbd></button></div></div>
+    <ol class="dir-g" id="dirG"></ol>
+  </div>
+</div>
+
+<!-- PROJECT COMPARISON -->
+<div class="ov cmp" id="cmp" role="dialog" aria-modal="true" aria-label="Compare projects" hidden>
+  <div class="cmp-in"><div class="cmp-h"><h2>Compare projects</h2><button class="bt bt-s bt-o" id="cmpX" type="button">Close <kbd>Esc</kbd></button></div><div class="cmp-t" id="cmpT2"></div></div>
+</div>
+
+<!-- VIEWER (documents + zoomable images) -->
+<div class="ov lb" id="lb" role="dialog" aria-modal="true" aria-label="Viewer" hidden>
+  <div class="lb-x">
+    <div class="lb-h"><div class="lb-tt"><h3 id="lt"></h3><p id="lsub"></p></div>
+      <div class="lb-b"><span class="cnt" id="lcnt"></span>
+        <div class="lb-z" id="lz" role="group" aria-label="Zoom"><button type="button" id="lzo" aria-label="Zoom out"><i class="fa-solid fa-minus"></i></button><button type="button" id="lzr" aria-label="Reset zoom">100%</button><button type="button" id="lzi" aria-label="Zoom in"><i class="fa-solid fa-plus"></i></button></div>
+        <button class="bt bt-s bt-o" id="lens" type="button" aria-pressed="false"><i class="fa-solid fa-magnifying-glass-plus"></i> <span>Lens</span></button>
+        <button class="bt bt-s bt-o" id="lpdf" type="button" aria-pressed="false" hidden><i class="fa-solid fa-file-pdf"></i> <span>Original PDF</span></button>
+        <a class="bt bt-s bt-p" id="ld2" download><i class="fa-solid fa-download"></i> <span>Download</span></a>
+        <a class="bt bt-s bt-o" id="lo" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a>
+        <button class="bt bt-s bt-o" id="lc" type="button">Close ✕</button></div></div>
+    <div class="lb-stage" id="lst"><iframe id="lf" title="Document viewer" hidden></iframe><img id="li" alt="" draggable="false"><div class="loupe" id="loupe" hidden></div></div>
+    <div class="lb-film" id="lfilm" hidden></div>
+  </div>
+  <button class="lb-n lb-p" id="lbp" type="button" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button><button class="lb-n lb-nx" id="lbn" type="button" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<!-- GUIDED TOUR -->
+<div class="tour" id="tour" hidden><span class="tour-hole" id="tourHole"></span><div class="tour-c" id="tourC" role="dialog" aria-label="Guided tour"><p class="cnt" id="tourN">1 / 7</p><h3 id="tourT"></h3><p id="tourD"></p><div class="cta"><button class="bt bt-s bt-o" id="tourPrev" type="button">Back</button><button class="bt bt-s bt-p" id="tourNext" type="button">Next</button><button class="bt bt-s bt-o" id="tourSkip" type="button">End tour</button></div></div></div>
+
+<div class="note-toast" id="toast" role="status" aria-live="polite">Done!</div>
+<canvas id="bloom" aria-hidden="true"></canvas>
+<script src="js/data.js"></script>
+<script src="js/art.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/intro.js"></script>
+<script src="js/main.js"></script>
+<script src="js/portal.js"></script>
+<script src="js/living.js"></script>
+<script src="js/pages.js"></script>
+</body>
+</html>

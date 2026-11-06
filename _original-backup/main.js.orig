@@ -1,0 +1,407 @@
+/* =========================================================
+   PORTFOLIO 2.0 — "The Digital Identity Garden" · main.js (vanilla, no dependencies)
+   1 helpers · 2 theme/accent/modes/sound · 3 background field · 4 intro · 5 navigation + transitions
+   6 overlays + command center · 7 hero/about · 8 journey · 9 work · 10 skills · 11 projects + compare
+   12 certificates · 13 viewer (zoom) · 14 CV preview · 15 FAQ · 16 contact · 17 discovery map
+   18 cursor · keyboard · easter eggs · 19 init
+   ========================================================= */
+(()=>{'use strict';
+/* ---------- 1 · helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const root=document.documentElement,RM0=matchMedia('(prefers-reduced-motion: reduce)').matches,FINE=matchMedia('(hover:hover) and (pointer:fine)').matches;
+let RM=RM0||root.classList.contains('calm');
+const EMAIL='jenabenisseredondo523@gmail.com',LI='https://ph.linkedin.com/in/jena-benisse-redondo-267106449';
+const CV={u:'resume/Jena-Redondo-Resume.pdf',t:'Curriculum Vitae — Jena Benisse Redondo',k:'pdf',dl:'Jena-Redondo-Curriculum-Vitae.pdf'};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad=n=>String(n).padStart(2,'0'),topOf=e=>e.getBoundingClientRect().top+scrollY;
+const save=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},load=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2400)};
+let locks=0;const lock=on=>{locks=Math.max(0,locks+(on?1:-1));root.style.overflow=locks?'hidden':''};
+const trap=(e,c)=>{if(e.key!=='Tab')return;const f=$$('a[href],button:not([disabled]),input,select,textarea,[tabindex="0"]',c).filter(x=>x.offsetParent!==null&&!x.closest('.gone')&&!x.closest('[hidden]'));if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){z.focus();e.preventDefault()}else if(!e.shiftKey&&document.activeElement===z){a.focus();e.preventDefault()}};
+const tokens=s=>s.toLowerCase().split(/\s+/).filter(Boolean);
+const matches=(hay,q)=>{const t=tokens(q);const h=hay.toLowerCase();return t.every(w=>h.includes(w))};
+
+const RECS=[['home','Home','Start here'],['about','About me','Story, strengths & education'],['journey','Learning journey','Timeline & coursework'],['work','What I build','Areas of work · OJT'],['skills','My skills','Skills constellation'],['projects','Featured projects','Project explorer'],['certificates','Certifications','Credential gallery'],['cv','Curriculum Vitae','Interactive document'],['presence','Professional presence','LinkedIn'],['interests','Personal interests','Beyond the code'],['faq','Quick answers','Recruiter Q&A'],['contact','Contact','Let’s connect']];
+const SEC=RECS.map(r=>document.getElementById(r[0]));
+
+/* ---------- 2 · theme · accent · viewing modes · sound ---------- */
+const ACC={Emerald:['52,209,127','14,107,60'],Fern:['142,232,106','52,110,18'],Mint:['143,233,192','14,112,76'],Jade:['25,179,148','8,104,88']};
+let accN=load('jbr-acc');if(!ACC[accN])accN='Emerald';
+function applyAcc(){const s=root.style;if(accN==='Emerald'){['--acc','--acc-rgb','--acc-ink'].forEach(p=>s.removeProperty(p));return}const v=ACC[accN],d=root.dataset.theme==='dark';s.setProperty('--acc-rgb',v[0]);s.setProperty('--acc','rgb('+v[0]+')');s.setProperty('--acc-ink','rgb('+(d?v[0]:v[1])+')')}
+function setTheme(t,anim){const run=()=>{root.dataset.theme=t;save('jbr-theme',t);$('#th i').className='fa-solid '+(t==='dark'?'fa-moon':'fa-sun');$('#th').setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' mode');$('meta[name=theme-color]').content=t==='dark'?'#08180f':'#edf3e8';applyAcc();fieldColor()};
+  if(anim&&document.startViewTransition&&!RM){const r=$('#th').getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,R=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+    try{const vt=document.startViewTransition(run);setTimeout(()=>{if(root.dataset.theme!==t)run()},600);vt.ready.then(()=>root.animate({clipPath:[`circle(0 at ${x}px ${y}px)`,`circle(${R}px at ${x}px ${y}px)`]},{duration:750,easing:'cubic-bezier(.76,0,.24,1)',pseudoElement:'::view-transition-new(root)'})).catch(()=>{})}catch(e){run()}}else run()}
+const flip=()=>{setTheme(root.dataset.theme==='dark'?'light':'dark',true);beep(380,.12,.05,'triangle',-120)};
+$('#th').onclick=flip;
+/* viewing modes */
+function setMode(name,on,quiet){root.classList.toggle(name,on);save('jbr-'+name,on?'on':'off');const b=$('#'+name+'T');b.setAttribute('aria-pressed',on);b.lastElementChild.textContent=on?'on':'off';
+  if(name==='calm'){RM=RM0||on;if(RM)drawField(0,true)}
+  if(!quiet)toast((name==='calm'?'Calm mode ':'Comfort text ')+(on?'on':'off'))}
+$('#calmT').onclick=()=>setMode('calm',!root.classList.contains('calm'));$('#comfyT').onclick=()=>setMode('comfy',!root.classList.contains('comfy'));
+let AC=null,snd=false;
+function beep(f=520,d=.06,v=.035,type='sine',slide=0){if(!snd||!AC)return;try{const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+slide),t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}}
+function toggleSound(){snd=!snd;if(snd&&!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){snd=false}}
+  if(AC&&AC.resume)AC.resume();const b=$('#snd');b.setAttribute('aria-pressed',snd);b.setAttribute('aria-label','Sound effects: '+(snd?'on (click to turn off)':'off (click to turn on)'));b.firstElementChild.className='fa-solid '+(snd?'fa-volume-high':'fa-volume-xmark');toast('Sound '+(snd?'on':'off'));beep(660,.12,.05,'sine',240)}
+$('#snd').onclick=toggleSound;
+let lastH=0;document.addEventListener('mouseover',e=>{if(!snd)return;const n=performance.now();if(n-lastH<90)return;if(e.target.closest('.btn,.ib,.px-list button,.idx-grid a,.strip button,.tabs button,.mn'))lastH=n,beep(900,.035,.015,'square')});
+document.addEventListener('click',e=>{if(snd&&e.target.closest('button,a'))beep(520,.07,.03,'triangle',120)});
+
+/* ---------- 3 · background field: ticks that lean toward the pointer ---------- */
+const cv=$('#field'),cx=cv.getContext('2d');let W,H,GAP=34,tickC='170,225,185',accRgb='52,209,127';const ptr={x:-999,y:-999};
+function fieldColor(){const cs=getComputedStyle(root);tickC=cs.getPropertyValue('--tick').trim()||'170,225,185';accRgb=cs.getPropertyValue('--acc-rgb').trim()||'52,209,127';if(RM)drawField(0,true)}
+function sizeField(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);GAP=W<760?44:34;if(RM)drawField(0,true)}
+let lastF=0;function drawField(t,force){if(!force&&t-lastF<32)return;lastF=t;cx.clearRect(0,0,W,H);cx.lineCap='round';const sy=(scrollY*.1)%GAP,has=ptr.x>-900;
+  cx.lineWidth=1.4;cx.strokeStyle=`rgba(${tickC},.2)`;cx.beginPath();const near=[];
+  for(let x=GAP/2;x<W+GAP;x+=GAP)for(let y=-GAP+sy;y<H+GAP;y+=GAP){const dx=ptr.x-x,dy=ptr.y-y,d=has?Math.hypot(dx,dy):9999,wv=Math.sin(t/2600+x*.008+y*.006)*.9+y*.002;
+    let ang=wv,len=7;if(d<420){const w=Math.pow(1-d/420,.7),ta=Math.atan2(dy,dx);ang=Math.atan2(Math.sin(wv)*(1-w)+Math.sin(ta)*w,Math.cos(wv)*(1-w)+Math.cos(ta)*w);len=7+w*9}
+    const ox=Math.cos(ang)*len,oy=Math.sin(ang)*len;
+    if(d<190)near.push([x,y,ox,oy,1-d/190]);else{cx.moveTo(x-ox/2,y-oy/2);cx.lineTo(x+ox/2,y+oy/2)}}
+  cx.stroke();cx.lineWidth=2;near.forEach(n=>{cx.strokeStyle=`rgba(${accRgb},${.25+n[4]*.7})`;cx.beginPath();cx.moveTo(n[0]-n[2]/2,n[1]-n[3]/2);cx.lineTo(n[0]+n[2]/2,n[1]+n[3]/2);cx.stroke()})}
+function loopField(t){if(!document.hidden&&!RM)drawField(t);requestAnimationFrame(loopField)}
+addEventListener('resize',sizeField);
+addEventListener('pointermove',e=>{ptr.x=e.clientX;ptr.y=e.clientY},{passive:true});
+document.addEventListener('pointerleave',()=>{ptr.x=ptr.y=-999});
+
+/* ---------- 4 · intro ---------- */
+const intro=$('#intro');let introDone=!root.classList.contains('intro-on');
+function save2(k){try{sessionStorage.setItem(k,'1')}catch(e){}}
+function endIntro(){if(introDone)return;introDone=true;save2('jbr-intro');intro.classList.add('out');root.classList.add('intro-out');lock(0);setTimeout(()=>{root.classList.remove('intro-on');intro.hidden=true},1100);const h=location.hash.slice(1);if(h&&document.getElementById(h))setTimeout(()=>scrollTo({top:topOf(document.getElementById(h)),behavior:'instant'}),60)}
+function runIntro(){if(introDone)return;if(RM){introDone=true;save2('jbr-intro');root.classList.remove('intro-on');return}
+  lock(1);$('#introList').innerHTML=RECS.map((r,i)=>`<li><b>${pad(i+1)}</b>${esc(r[1])}</li>`).join('');const lis=$$('#introList li'),T0=performance.now(),DUR=2500;
+  (function step(){if(introDone)return;const p=Math.min(1,(performance.now()-T0)/DUR);$('#introPct').textContent=String(Math.round(p*100)).padStart(3,'0')+'%';$('#introBar').style.width=p*100+'%';const k=Math.floor(p*lis.length*1.2);lis.forEach((l,i)=>l.classList.toggle('on',i<k));if(p>.4)$('.intro-name').classList.add('on');if(p<1)requestAnimationFrame(step);else setTimeout(endIntro,380)})();
+  $('#introSkip').onclick=endIntro;intro.addEventListener('click',endIntro);setTimeout(endIntro,7000)}
+
+/* ---------- 5 · navigation + layered transitions ---------- */
+let curI=0,busy=false;const tx=$('#tx'),panels=$$('i',tx);
+function setCur(i){curI=i;$('#wn').textContent=pad(i+1);$('#wt').textContent=RECS[i][1];$$('#rail a').forEach((a,j)=>{a.classList.toggle('on',j===i);if(j===i)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current')});$$('.dock a').forEach(a=>a.classList.toggle('on',a.dataset.d===RECS[i][0]));$$('#idxGrid a').forEach((a,j)=>a.parentElement.classList.toggle('here',j===i))}
+let tick=false;
+function onScroll(){tick=false;const y=scrollY,h=root.scrollHeight-innerHeight;$('#prog').style.transform=`scaleX(${h>0?y/h:0})`;const tp=$('#top');tp.classList.toggle('on',y>700);tp.style.setProperty('--p',(h>0?y/h*100:0)+'%');let c=0;SEC.forEach((e,i)=>{if(topOf(e)-innerHeight*.4<=y)c=i});if(c!==curI)setCur(c)}
+addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(onScroll)}},{passive:true});
+const anim=(el,kf,o)=>el.animate(kf,Object.assign({fill:'forwards',easing:'cubic-bezier(.76,0,.24,1)'},o));
+async function transition(id,title,variant,x,y){tx.classList.add('on');const lab=$('#txl');lab.textContent=title;
+  const D=520,st=75;let inK,outK;
+  if(variant===0){inK=[{transform:'translateX(-101%)'},{transform:'translateX(0)'}];outK=[{transform:'translateX(0)'},{transform:'translateX(101%)'}]}
+  else if(variant===1){inK=[{transform:'translateY(101%)'},{transform:'translateY(0)'}];outK=[{transform:'translateY(0)'},{transform:'translateY(-101%)'}]}
+  else{const c0=`circle(0px at ${x}px ${y}px)`,c1=`circle(150vmax at ${x}px ${y}px)`;inK=[{transform:'none',clipPath:c0},{transform:'none',clipPath:c1}];outK=[{transform:'none',clipPath:c1},{transform:'none',clipPath:c0}]}
+  panels.forEach(p=>{p.getAnimations().forEach(a=>a.cancel());p.style.transform=variant===0?'translateX(-101%)':variant===1?'translateY(101%)':'none';p.style.clipPath=variant===2?'circle(0px at 0 0)':''});
+  const ins=panels.map((p,i)=>anim(p,inK,{duration:D,delay:i*st}));
+  anim(lab,[{opacity:0,translate:'0 30px'},{opacity:1,translate:'0 0'}],{duration:400,delay:D*.8,easing:'ease-out'});
+  await ins[2].finished;beep(300,.25,.05,'sawtooth',500);
+  closeAll(true,true);
+  scrollTo({top:id==='home'?0:topOf(document.getElementById(id)),behavior:'instant'});setCur(RECS.findIndex(r=>r[0]===id));
+  await new Promise(r=>setTimeout(r,260));
+  anim(lab,[{opacity:1},{opacity:0}],{duration:220});
+  const outs=panels.map((p,i)=>anim(p,outK,{duration:D,delay:i*st}));await outs[2].finished;
+  panels.forEach(p=>{p.getAnimations().forEach(a=>a.cancel())});lab.getAnimations().forEach(a=>a.cancel());tx.classList.remove('on')}
+async function go(id,o={}){const el=document.getElementById(id);if(!el||busy)return;const y=id==='home'?0:topOf(el),i=RECS.findIndex(r=>r[0]===id);
+  if(o.push!==false&&location.hash!=='#'+id)history.pushState(null,'','#'+id);
+  const focusIt=()=>{el.setAttribute('tabindex','-1');el.focus({preventScroll:true})};
+  if(RM||Math.abs(y-scrollY)<innerHeight*1.1){closeAll(false,true);scrollTo({top:y,behavior:RM?'instant':'smooth'});setTimeout(focusIt,RM?0:600);return}
+  busy=true;try{await transition(id,RECS[i][1],i%3,o.x||innerWidth/2,o.y||innerHeight/2)}finally{busy=false;tx.classList.remove('on')}focusIt()}
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a||a.getAttribute('href').length<2)return;const id=a.getAttribute('href').slice(1);if(!RECS.some(r=>r[0]===id))return;e.preventDefault();go(id,{x:e.clientX||innerWidth/2,y:e.clientY||innerHeight/2})});
+addEventListener('popstate',()=>go(location.hash.slice(1)||'home',{push:false}));
+const jump=d=>{const n=Math.max(0,Math.min(RECS.length-1,curI+d));if(n!==curI)go(RECS[n][0])};
+$('#rail').innerHTML=RECS.map((r,i)=>`<a href="#${r[0]}" aria-label="${esc(r[1])}"><i></i><span>${esc(r[1])}</span></a>`).join('');
+$('#top').onclick=()=>go('home');
+
+/* ---------- 6 · overlays + command center ---------- */
+function overlay(el,{ms=720,onOpen,onClose,focus}={}){let t,from;
+  return{get open(){return el.classList.contains('open')},
+    show(opener){clearTimeout(t);from=opener||document.activeElement;el.hidden=false;void el.offsetWidth;if(!el.classList.contains('open'))lock(1);el.classList.add('open');if(onOpen)onOpen();if(focus)setTimeout(()=>{const f=typeof focus==='function'?focus():$(focus);f&&f.focus&&f.focus()},RM?0:420)},
+    hide(instant,nofocus){if(!el.classList.contains('open'))return;if(instant)el.style.transition='none';el.classList.remove('open');lock(0);t=setTimeout(()=>{el.hidden=true;el.style.transition=''},instant?30:ms);if(onClose)onClose();if(!nofocus&&from&&from.focus&&document.contains(from))from.focus()}}}
+const idxb=$('#idxb');
+const IDX=overlay($('#idx'),{onOpen(){idxb.setAttribute('aria-expanded','true');$('#idxq').value='';filterIdx()},onClose(){idxb.setAttribute('aria-expanded','false')},focus:'#idxq'});
+const MAP=overlay($('#map'),{onOpen(){buildMap()},focus:'#mapStage .mn'});
+const CMP=overlay($('#cmp'),{focus:'#cmpX'});
+function closeAll(instant,nofocus){IDX.hide(instant,nofocus);MAP.hide(instant,nofocus);CMP.hide(instant,nofocus);closePres(instant,nofocus);closeL(instant)}
+const copyText=(txt,what,btn)=>{const ok=()=>{toast(what+' copied!');if(btn){btn.classList.add('done');setTimeout(()=>btn.classList.remove('done'),1400)}};
+  const fb=()=>{try{const ta=document.createElement('textarea');ta.value=txt;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;left:-999px;top:0';document.body.append(ta);ta.select();const r=document.execCommand('copy');ta.remove();r?ok():toast('Could not copy automatically — please select and copy it manually.')}catch(e){toast('Could not copy automatically — please select and copy it manually.')}};
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(txt).then(ok).catch(fb);else fb()};
+const copyEmail=()=>{copyText(EMAIL,'Email',$('#copy'));confetti($('#copy'))};
+const dlCV=()=>{const a=document.createElement('a');a.href=CV.u;a.download=CV.dl;document.body.append(a);a.click();a.remove()};
+const vcard=()=>{const v='BEGIN:VCARD\nVERSION:3.0\nFN:Jena Benisse Redondo\nN:Redondo;Jena Benisse;;;\nTITLE:BSIT Student\nORG:La Consolacion College Tanauan\nTEL;TYPE=CELL:+639665207724\nEMAIL:'+EMAIL+'\nADR;TYPE=HOME:;;Sulpoc;Tanauan City;Batangas;;Philippines\nURL:https://lcct-24-13096.github.io/portfolio/\nEND:VCARD',a=document.createElement('a');a.href=URL.createObjectURL(new Blob([v],{type:'text/vcard'}));a.download='Jena-Benisse-Redondo.vcf';document.body.append(a);a.click();a.remove();toast('Contact card saved!')};
+const ACTS=[['Copy email','fa-solid fa-copy',copyEmail],['Download Curriculum Vitae','fa-solid fa-download',dlCV],['View Curriculum Vitae','fa-solid fa-file-lines',()=>openL([CV],0)],['Open LinkedIn profile','fa-brands fa-linkedin-in',()=>window.open(LI,'_blank','noopener')],['Save my contact (vCard)','fa-solid fa-address-book',vcard],['Play Knowledge Dash','fa-solid fa-gamepad',()=>window.open('https://knowledge-dash.gamer.free/','_blank','noopener')],['Open the discovery map','fa-solid fa-compass',()=>MAP.show($('#mapB'))],['Toggle dark / light mode','fa-solid fa-circle-half-stroke',flip],['Toggle sound effects','fa-solid fa-volume-high',toggleSound],['Send me a message','fa-solid fa-pen',()=>{go('contact');setTimeout(()=>$('#fn').focus({preventScroll:true}),1700)}]];
+$('#idxGrid').innerHTML=RECS.map((r,i)=>`<li><a href="#${r[0]}"><span class="n">${pad(i+1)}</span><span><h3>${esc(r[1])}</h3><p>${esc(r[2])}</p></span></a></li>`).join('');
+$('#idxAct').innerHTML=ACTS.map((a,i)=>`<button type="button" data-a="${i}"><i class="${a[1]}"></i>${esc(a[0])}</button>`).join('');
+const runAct=i=>{const a=ACTS[i];IDX.hide(false,true);setTimeout(a[2],/^(Toggle|Send|Open the)/.test(a[0])?60:360)};
+$('#idxAct').onclick=e=>{const b=e.target.closest('button');if(b)runAct(+b.dataset.a)};
+$('#swatches').innerHTML=Object.keys(ACC).map(n=>`<button type="button" title="${n}" aria-label="${n} accent" aria-pressed="${n===accN}" data-n="${n}" style="background:rgb(${ACC[n][0]})" class="${n===accN?'on':''}"></button>`).join('');
+$('#swatches').onclick=e=>{const b=e.target.closest('button');if(!b)return;accN=b.dataset.n;save('jbr-acc',accN);applyAcc();fieldColor();$$('#swatches button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});toast(accN+' green applied')};
+let curOn=load('jbr-cur')!=='off';function setCurT(){document.body.classList.toggle('nocur',!curOn);const b=$('#curT');b.setAttribute('aria-pressed',curOn);b.lastElementChild.textContent=curOn?'on':'off'}$('#curT').onclick=()=>{curOn=!curOn;save('jbr-cur',curOn?'on':'off');setCurT()};setCurT();
+idxb.onclick=()=>IDX.open?IDX.hide():IDX.show(idxb);$('#dockIdx').onclick=()=>IDX.show($('#dockIdx'));$('#idxc').onclick=()=>IDX.hide();
+$('#mapB').onclick=()=>MAP.show($('#mapB'));$('#wander').onclick=()=>MAP.show($('#wander'));$('#mapX').onclick=()=>MAP.hide();$('#cmpX').onclick=()=>CMP.hide();
+/* search index across the whole portfolio (filled once data below exists) */
+let ENTRIES=[];
+function buildEntries(){ENTRIES=[];
+  RECS.forEach((r,i)=>ENTRIES.push({ty:'Section',ic:'fa-hashtag',l:r[1],s:r[2],h:r.join(' '),run:()=>go(r[0])}));
+  P.forEach((p,i)=>ENTRIES.push({ty:'Project',ic:'fa-laptop-code',l:p.t,s:p.cat,h:[p.t,p.cat,p.tag,p.d,p.tech.join(' ')].join(' '),run:()=>{go('projects');setTimeout(()=>{pq.value='';ps='';pf='all';$$('#fl button').forEach((x,k)=>x.classList.toggle('on',k===0));showP(i);openPres(i)},RM?60:900)}}));
+  C.forEach((c,i)=>ENTRIES.push({ty:'Certificate',ic:'fa-award',l:c[0],s:c[2],h:[c[0],c[1],c[2],c[4],c[5].join(' ')].join(' '),run:()=>{cq.value='';cs2='';cf='All';$$('#ctf button').forEach((x,k)=>x.classList.toggle('on',k===0));cApply();showC(i);openL(cItems(),i,$('#cgPaper'))}}));
+  $$('#faq-l details').forEach((d,i)=>ENTRIES.push({ty:'Question',ic:'fa-circle-question',l:$('summary',d).textContent,s:$('.fa p',d).textContent.slice(0,90)+'…',h:d.textContent,run:()=>faqOpen(i)}));
+  S.forEach(s=>ENTRIES.push({ty:'Skill',ic:'fa-diagram-project',l:s[0],s:s[1]+' · '+s[3],h:s.join(' '),run:()=>{go('skills');setTimeout(()=>{skF=s[1];skS=s[0];skRender()},RM?60:900)}}));
+  ACTS.forEach((a,i)=>ENTRIES.push({ty:'Action',ic:a[1],l:a[0],s:'Quick action',h:a[0],run:a[2]}))}
+let resList=[];
+function filterIdx(){const q=$('#idxq').value.trim(),body=$('.idx-body'),res=$('#idxRes');body.classList.toggle('searching',!!q);
+  if(!q){res.innerHTML='';resList=[];return}
+  resList=ENTRIES.filter(e=>matches(e.h+' '+e.l,q)).slice(0,10);
+  res.innerHTML=resList.length?resList.map((e,i)=>`<button type="button" data-r="${i}"><i class="fa-solid ${e.ic}"></i><span><b>${esc(e.l)}</b><small>${esc(e.ty)} · ${esc(e.s)}</small></span></button>`).join(''):'<p class="empty">Nothing matches that yet. Try “PHP”, “Cisco”, “internship”, or a project name.</p>'}
+$('#idxq').oninput=filterIdx;
+$('#idxRes').onclick=e=>{const b=e.target.closest('button');if(!b)return;const r=resList[+b.dataset.r];IDX.hide(false,true);setTimeout(r.run,RM?30:380)};
+
+/* ---------- 7 · hero / about ---------- */
+const LK=[['images/profile.jpg','Professional','50% 10%'],['images/casual-1.jpg','Smart casual','50% 20%'],['images/casual-2.jpg','Everyday','50% 28%'],['images/casual-3.jpg','City','50% 25%']];let lk=0,lkT;
+$('#ph').innerHTML=LK.map(l=>`<img src="${l[0]}" alt="Jena — ${l[1]}" style="object-position:${l[2]}" width="900" height="1000">`).join('');
+$('#looks').innerHTML=LK.map((l,i)=>`<button type="button" style="background-image:url(${l[0]});background-position:${l[2]}" aria-label="Show ${l[1]} photo" title="${l[1]}"></button>`).join('');
+function showLook(i){lk=i;$$('#ph img').forEach((e,j)=>e.classList.toggle('on',j===i));$$('#looks button').forEach((e,j)=>{e.classList.toggle('on',j===i);e.setAttribute('aria-pressed',j===i)});$('#cntr').textContent=pad(i+1)+' / 04';const b=$('#pbar');b.classList.remove('go');void b.offsetWidth;if(!RM)b.classList.add('go')}
+const autoLook=()=>{clearInterval(lkT);lkT=setInterval(()=>{if(!RM&&!document.hidden)showLook((lk+1)%4)},4200)};
+$$('#looks button').forEach((b,i)=>b.onclick=()=>{showLook(i);autoLook()});showLook(0);autoLook();
+const ROLES=['BS Information Technology Student','Web Developer in the Making','Database & Systems Builder','Networking Enthusiast'];
+(function(){const el=$('#role');let ri=0,k=0,d=0;(function t(){if(RM){el.textContent=ROLES[0];setTimeout(t,800);return}const w=ROLES[ri];k+=d?-1:1;el.textContent=w.slice(0,k);let s=d?28:60;if(!d&&k===w.length){d=1;s=1800}else if(d&&!k){d=0;ri=(ri+1)%ROLES.length;s=300}setTimeout(t,s)})()})();
+(function(){const g=$('#hi'),w=['Hello, I’m','Kumusta, ako si','Hi there, I’m'];let i=0;setInterval(()=>{if(RM||document.hidden)return;i=(i+1)%w.length;g.textContent=w[i]},3200)})();
+const clk=()=>{const e=$('#lt2');if(e)e.textContent=new Date().toLocaleTimeString('en-PH',{timeZone:'Asia/Manila',hour:'numeric',minute:'2-digit'})};clk();setInterval(clk,30000);
+if(FINE){const hr=$('.hero-r');$('#home').addEventListener('pointermove',e=>{if(RM)return;const r=$('#home').getBoundingClientRect();hr.style.setProperty('--px',((e.clientX-r.left)/r.width-.5)*2);hr.style.setProperty('--py',((e.clientY-r.top)/r.height-.5)*2)})}
+const mqW=['Web Development','UI/UX Design','PHP & MySQL','Networking','System Development','Database Management','Cisco Networking Academy','Programming','Responsive Design','CRUD Systems'],mq=mqW.concat(mqW).map(x=>`<span>${esc(x)}</span>`).join('');$('#mq1').innerHTML=mq+mq;$('#mq2').innerHTML=mq+mq;
+const bg=['Open for OJT','Let’s work together','Hire Jena','Web & Systems','Ready to learn','Let’s build'].map(x=>`<span>${esc(x)}</span>`).join('');$('#mq3').innerHTML=bg+bg;
+function countUp(el){const n=+el.dataset.n;if(RM){el.textContent=n;return}let i=0;el.textContent=0;const s=setInterval(()=>{el.textContent=++i;if(i>=n)clearInterval(s)},110)}
+$('#bioMore').onclick=()=>{const o=$('#bio').classList.toggle('open');$('#bioMore').setAttribute('aria-expanded',o);$('#bioMore span').textContent=o?'Show less':'Read the full story'};
+/* terminal */
+const TL=[['c','whoami'],['o','jena-benisse-redondo'],['c','cat role.txt'],['o','BSIT student · aspiring web & systems developer'],['c','ls skills/'],['o','html  css  javascript  php  mysql  networking  ui-ux'],['c','cat status.txt'],['s','open to learning & building',' — internships, collaborations, projects']];
+const lineHTML=(l,n)=>{const full=l[1]+(l[2]||'');if(l[0]==='c')return'<b>$</b> '+esc(full.slice(0,n));if(l[0]==='o')return esc(full.slice(0,n));return'<u>'+esc(l[1].slice(0,n))+'</u>'+esc((l[2]||'').slice(0,Math.max(0,n-l[1].length)))};
+let tDone=false;function typeTerm(){if(tDone)return;tDone=true;const el=$('#tp');if(RM){el.innerHTML=TL.map(l=>lineHTML(l,99)).join('\n');return}let li=0,ch=0,out='';(function ty(){if(li>=TL.length)return;const l=TL[li],len=(l[1]+(l[2]||'')).length;if(ch<=len){el.innerHTML=out+lineHTML(l,ch);ch++;setTimeout(ty,l[0]==='c'?42:12)}else{out+=lineHTML(l,len)+'\n';li++;ch=0;setTimeout(ty,l[0]==='c'?260:380)}})()}
+$('#tj').innerHTML=['<i class="kk">const</i> <i class="ff">jena</i> = {','  name: <i class="ss">\'Jena Benisse Redondo\'</i>,','  role: <i class="ss">\'BSIT Student\'</i>,','  school: <i class="ss">\'La Consolacion College Tanauan\'</i>,','  stack: [<i class="ss">\'HTML\'</i>, <i class="ss">\'CSS\'</i>, <i class="ss">\'JavaScript\'</i>, <i class="ss">\'PHP\'</i>, <i class="ss">\'MySQL\'</i>],','  exploring: [<i class="ss">\'Networking\'</i>, <i class="ss">\'Robotics\'</i>],','  openTo: [<i class="ss">\'internships\'</i>, <i class="ss">\'collaborations\'</i>, <i class="ss">\'projects\'</i>],','  <i class="ff">hire</i>() { <i class="kk">return</i> <i class="ss">\'Let’s build something useful.\'</i> }','};'].join('\n');
+$('.tt').onclick=e=>{const b=e.target.closest('button');if(!b)return;$$('.tt button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});$('#tp').hidden=b.dataset.p!=='tp';$('#tj').hidden=b.dataset.p!=='tj'};
+
+/* ---------- 8 · learning journey ---------- */
+const jt=$('#jt'),ms=$$('.ms',jt);let moved=false;
+$$('.ms-b',jt).forEach(b=>b.onclick=()=>{if(moved)return;b.setAttribute('aria-expanded',b.getAttribute('aria-expanded')!=='true')});
+const jStep=()=>(ms[1].offsetLeft-ms[0].offsetLeft)||360;
+$('#jNext').onclick=()=>jt.scrollBy({left:jStep(),behavior:RM?'auto':'smooth'});$('#jPrev').onclick=()=>jt.scrollBy({left:-jStep(),behavior:RM?'auto':'smooth'});
+function jUpd(){const max=jt.scrollWidth-jt.clientWidth,i=Math.min(ms.length-1,Math.round(jt.scrollLeft/jStep()));$('#jCount').textContent=pad(i+1)+' / '+pad(ms.length);$('#jFill').style.transform=`scaleX(${max>0?.16+.84*jt.scrollLeft/max:1})`}
+jt.addEventListener('scroll',jUpd,{passive:true});jUpd();
+let dg=null;jt.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button)return;dg={x:e.clientX,s:jt.scrollLeft}});
+addEventListener('pointermove',e=>{if(!dg)return;const dx=e.clientX-dg.x;if(Math.abs(dx)>6){moved=true;jt.classList.add('drag')}if(moved)jt.scrollLeft=dg.s-dx});
+addEventListener('pointerup',()=>{if(!dg)return;dg=null;jt.classList.remove('drag');setTimeout(()=>moved=false,0)});
+jt.addEventListener('keydown',e=>{if(e.target!==jt)return;if(e.key==='ArrowRight'){jt.scrollBy({left:jStep(),behavior:'smooth'});e.preventDefault()}if(e.key==='ArrowLeft'){jt.scrollBy({left:-jStep(),behavior:'smooth'});e.preventDefault()}});
+const CW=[[["Programming & Development","fa-code",["Computer Programming 1","Computer Programming 2","Object-Oriented Programming"]],["Data & Systems","fa-database",["Information Management 1","Data Structure and Algorithm","Software Engineering"]],["Networking","fa-network-wired",["Networking 101","Networking 102"]],["Design & Human Interaction","fa-pen-ruler",["Multimedia Systems","Introduction to Human Interaction"]],["Computing Foundations","fa-laptop",["Introduction to Computing","Social and Professional Issues"]]],[["Application Development & Emerging Technologies","fa-mobile-screen-button"],["Interactive Programming & Technologies","fa-diagram-project"],["IT Project Management","fa-list-check"],["Platform Technologies","fa-layer-group"],["Web System Technologies","fa-globe"]]];
+const dCW=t=>$('#cw').innerHTML=CW[t].map((c,i)=>`<div class="${t?'now2':''}" style="--i:${i}"><i class="k fa-solid ${c[1]}"></i><h4>${esc(c[0])}</h4>${c[2]?`<ul>${c[2].map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<span class="mini">In Progress</span>'}</div>`).join('');dCW(0);
+$('#ctabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;$$('#ctabs button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});dCW(+b.dataset.t)};
+
+/* ---------- 9 · what I build ---------- */
+$$('.fp').forEach(p=>{const on=()=>{$$('.fp').forEach(x=>x.classList.toggle('on',x===p))};p.addEventListener('mouseenter',on);p.addEventListener('focus',on);p.addEventListener('click',on)});
+const PS=[['fa-comments','Listen to the goal, the users, and what the system or website needs to do.'],['fa-pen-ruler','Sketch the structure, database, and a clean, user-friendly interface.'],['fa-code','Develop with HTML, CSS, JavaScript, PHP, and MySQL — clean and organized.'],['fa-bug-slash','Check every feature, fix issues, and polish the details.'],['fa-flag-checkered','Hand over a working, easy-to-understand solution with clear explanation.']];
+$('.proc-steps').onclick=e=>{const b=e.target.closest('button');if(!b)return;const s=PS[+b.dataset.s];$$('.proc-steps button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b)});$('#pI').className='fa-solid '+s[0];$('#pT').textContent=s[1]};
+
+/* ---------- 10 · skills constellation ---------- */
+const S=[["HTML","Frontend","fa-brands fa-html5","Creating structured and semantic web pages and interfaces."],["CSS","Frontend","fa-brands fa-css3-alt","Designing responsive, clean, and modern user interfaces."],["JavaScript","Frontend","fa-brands fa-js","Creating interactive features and dynamic web functionality."],["PHP","Backend","fa-brands fa-php","Developing dynamic web applications and backend logic."],["MySQL","Database","fa-solid fa-database","Managing, organizing, and connecting application data."],["Networking","Networking","fa-solid fa-network-wired","Understanding addressing, devices, protocols, configuration, and troubleshooting."],["UI/UX Design","Frontend","fa-solid fa-pen-ruler","Applying design concepts to build clear, user-friendly interfaces."],["Programming","Backend","fa-solid fa-terminal","Solving problems with code across academic and personal projects."],["System Development","Backend","fa-solid fa-gears","Building complete systems — from database to interface."],["Microsoft Office Suite","Productivity","fa-solid fa-file-word","Documents, spreadsheets, and presentations for everyday work."],["Robotics","Exploration","fa-solid fa-robot","Exploring robotics concepts through workshop-based learning and hands-on activities."]];
+const CATS=['Frontend','Backend','Database','Networking','Productivity','Exploration'],CIC={Frontend:'fa-window-maximize',Backend:'fa-server',Database:'fa-database',Networking:'fa-network-wired',Productivity:'fa-file-word',Exploration:'fa-robot'},CAN={Frontend:-90,Backend:-30,Database:30,Networking:90,Productivity:150,Exploration:210};
+const stage=$('#skStage'),svg=$('#skLines');let nodes=[],lines=[],skF='All',skS=null;
+(function buildSky(){const pt=(a,r,cx0=50,cy0=50)=>[cx0+r*Math.cos(a*Math.PI/180),cy0+r*Math.sin(a*Math.PI/180)],cl=v=>Math.max(8,Math.min(92,v));
+  nodes.push({k:'core',x:50,y:50,cat:null});
+  CATS.forEach(c=>{const a=CAN[c],[x,y]=pt(a,25),sk=S.filter(s=>s[1]===c);nodes.push({k:'cat',n:c,x,y,cat:c});lines.push({a:[50,50],b:[x,y],cat:c,to:c});
+    sk.forEach((s,i)=>{const off=sk.length>1?(i-(sk.length-1)/2)*(sk.length>3?36:44):0,[sx,sy]=pt(a+off,sk.length>3?17:16,x,y),X=cl(sx),Y=cl(sy);nodes.push({k:'sk',n:s[0],x:X,y:Y,cat:c,s});lines.push({a:[x,y],b:[X,Y],cat:c,to:s[0]})})});
+  svg.setAttribute('viewBox','0 0 100 100');svg.innerHTML=lines.map(l=>`<line x1="${l.a[0]}" y1="${l.a[1]}" x2="${l.b[0]}" y2="${l.b[1]}" data-c="${l.cat}" data-t="${esc(l.to)}"></line>`).join('');
+  stage.insertAdjacentHTML('beforeend',nodes.map((n,i)=>n.k==='core'?`<div class="nd core" style="left:50%;top:50%"><span class="nd-c">JBR.</span><em>BSIT · Developer</em></div>`:`<button type="button" class="nd ${n.k==='sk'?'sk':'cat'}" data-i="${i}" style="left:${n.x}%;top:${n.y}%" aria-label="${n.k==='sk'?esc(n.n)+' — '+n.cat+' skill':esc(n.n)+' cluster'}"><span class="nd-c"><i class="${n.k==='sk'?n.s[2]:'fa-solid '+CIC[n.n]}"></i></span><em>${esc(n.n)}</em></button>`).join(''));
+  $('#stabs').innerHTML=['All',...CATS].map((c,i)=>`<button type="button" class="${i?'':'on'}" data-s="${c}">${c}</button>`).join('')})();
+const techU=['HTML','CSS','JavaScript','PHP','MySQL','CRUD','GitHub','Networking','Cisco','Robotics','UI/UX','MS Office'];$('#skU').innerHTML=techU.map(t=>`<li>${t}</li>`).join('');
+function skRender(){$$('.nd',stage).forEach((el,i)=>{const n=nodes[i];if(!n)return;el.classList.toggle('dim',skF!=='All'&&n.k!=='core'&&n.cat!==skF);el.classList.toggle('sel',!!skS&&n.n===skS||(skF!=='All'&&n.k==='cat'&&n.n===skF&&!skS));if(n.k!=='core')el.setAttribute('aria-pressed',el.classList.contains('sel'))});
+  $$('line',svg).forEach(l=>{const inCat=skF!=='All'&&l.dataset.c===skF,isSel=skS&&(l.dataset.t===skS||l.dataset.t===S.find(s=>s[0]===skS)[1]);l.classList.toggle('dim',skF!=='All'&&!inCat);l.classList.toggle('hot',!!inCat&&!skS||!!isSel)});
+  $$('#stabs button').forEach(b=>b.classList.toggle('on',b.dataset.s===skF));
+  if(skS){const s=S.find(x=>x[0]===skS);$('#skCat').textContent='Cluster · '+s[1];$('#skName').textContent=s[0];$('#skDesc').textContent=s[3]}
+  else if(skF!=='All'){$('#skCat').textContent='Cluster · '+skF;$('#skName').textContent=skF;$('#skDesc').textContent='Skills in this cluster: '+S.filter(s=>s[1]===skF).map(s=>s[0]).join(', ')+'.'}
+  else{$('#skCat').textContent='Cluster · All';$('#skName').textContent='Pick a node';$('#skDesc').textContent='Select any skill in the constellation to read how I use it. Use the clusters to filter.'}}
+stage.addEventListener('click',e=>{const b=e.target.closest('.nd[data-i]');if(!b)return;const n=nodes[+b.dataset.i];if(n.k==='cat'){skF=skF===n.n&&!skS?'All':n.n;skS=null}else{skF=n.cat;skS=n.n}skRender()});
+$('#stabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;skF=b.dataset.s;skS=null;skRender()};
+
+/* ---------- 11 · projects explorer + search + compare ---------- */
+const SH=['images/kd-1.jpg','images/kd-2.jpg','images/kd-3.jpg'],SC=['Home & match preview','Match setup','Live race'];
+const P=[
+{v:0,t:'Knowledge Dash',cat:'Educational Game',tag:'Featured · Educational Game',d:'Race your knowledge against the Bot or challenge another player online. Every correct answer builds momentum across 10 checkpoints toward the finish line — with a 20-second timer, 4 power-ups, 3 difficulty levels, and 300+ questions.',tech:['JavaScript','UI/UX','Game Logic','Online Multiplayer'],f:'web',ic:'fa-gamepad',c1:'#0b5a52',c2:'#071029',kst:[['10','Checkpoints'],['2','Game modes'],['3','Difficulties'],['300+','Questions']],link:['https://knowledge-dash.gamer.free/','Play live demo','fa-play'],shots:SH,caps:SC},
+{v:6,t:'LCCT Alumni & External Affairs Ticketing System',cat:'Ticketing System · AEA Module',tag:'Live System · Department Module',d:'My individually developed Alumni & External Affairs (AEA) department module of a multi-department ticketing system for La Consolacion College Tanauan. Each department\'s module is assigned to one developer, and all modules will be compiled into one system. Requesters sign in to submit tickets, while the office tracks active, unassigned, and overdue tickets from a live dashboard, alongside alumni records, external partners, reports, and an FAQ manager.',tech:['PHP','MySQL','UI/UX'],f:'system',ic:'fa-ticket',c1:'#17407a',c2:'#071029',shots:['images/aea-1.jpg','images/aea-2.jpg'],caps:['Sign-in page','Dashboard'],link:['https://lcct-ticketing-aea.infinityfree.io/auth/login.php','Open live system','fa-arrow-up-right-from-square']},
+{v:7,t:'SALRC — St. Augustine Learning Resource Center System',cat:'Library System',tag:'Live System · Library',d:'A full-screen library kiosk system for the St. Augustine Learning Resource Center of La Consolacion College Tanauan. Visitors time in and out for attendance and search the catalog across the Lower School, High School, Senior High School, and College libraries, with a live count of people in the library and titles in the catalog.',tech:['Attendance','Catalog Search','Kiosk UI'],f:'system',ic:'fa-book-open-reader',c1:'#0b2a5c',c2:'#7a5410',shots:['images/salrc-1.jpg','images/salrc-2.jpg'],caps:['Kiosk home','Libraries & live count'],link:['https://lcct-salrc.infinityfree.io/SALRC/public','Open live system','fa-arrow-up-right-from-square']},
+{v:1,t:'8 Sibs Sari-Sari Store POS',cat:'Multi-User System',tag:'POS & Inventory',d:'A multi-user Point-of-Sale and inventory management system designed to support sales, inventory, online orders, and business operations.',tech:['PHP','MySQL','JavaScript'],f:'business',ic:'fa-boxes-stacked',c1:'#d9a53a',c2:'#7a5410'},
+{v:2,t:'Tinurik Point-of-Sale System',cat:'Sales & Operations',tag:'Business System',d:'A point-of-sale system developed for food business operations, featuring order management, sales monitoring, and inventory functionality.',tech:['HTML','CSS','JavaScript'],f:'business',ic:'fa-cash-register',c1:'#d9684a',c2:'#7d2f1b'},
+{v:3,t:'Student Information Management System',cat:'Academic System',tag:'Web-Based System',d:'A web-based system designed to organize student records, courses, teachers, and enrollment information in one centralized system.',tech:['PHP','MySQL','CRUD'],f:'system',ic:'fa-users',c1:'#3d8bd9',c2:'#17407a'},
+{v:4,t:'Resort Reservation & Booking System',cat:'Reservation Management',tag:'Booking & Reservation',d:'A reservation management system designed to organize resort bookings, customer information, and reservation details in a more convenient way.',tech:['PHP','MySQL','HTML','CSS'],f:'system',ic:'fa-hotel',c1:'#8b6fd1',c2:'#3f2d85'},
+{v:5,t:'Jena Benisse Personal Portfolio',cat:'Personal Brand',tag:'Personal Project',d:'A responsive personal portfolio created to showcase my skills, academic projects, certificates, and continuous growth as an Information Technology student.',tech:['HTML','CSS','JavaScript','UI/UX'],f:'web',ic:'fa-laptop-code',c1:'#27b0a2',c2:'#0b5a52',link:['https://lcct-24-13096.github.io/portfolio/','Visit site','fa-arrow-up-right-from-square']}];
+const DECO=['','<div class="tiles">'+'<i></i>'.repeat(9)+'</div>','<span class="tk"></span>','<div class="rows">'+'<i></i>'.repeat(6)+'</div>','<div class="cal">'+Array.from({length:28},(_,k)=>`<i class="${[3,4,10,11,12,17,24].includes(k)?'f':''}"></i>`).join('')+'</div>','<div class="win"><i></i><i></i><i></i></div>'];
+const FILT=[['all','All projects'],['web','Web'],['business','Business'],['system','Systems']],FL=Object.fromEntries(FILT);
+let pi=0,pf='all',ph=null,presI=0,ps='',cmpOn=false,cmpSel=[];const pq=$('#pq');
+const vis=()=>P.map((p,i)=>i).filter(i=>(pf==='all'||P[i].f===pf)&&(!ps||matches([P[i].t,P[i].cat,P[i].tag,P[i].d,P[i].tech.join(' ')].join(' '),ps)));
+const viewHTML=(p,i)=>p.shots?`<div class="v vs v${p.v}" style="--c1:${p.c1};--c2:${p.c2}"><div class="art"></div><div class="shots">${p.shots.map((s,k)=>`<img src="${s}" alt="${esc(p.t)} — ${esc(p.caps[k])}" loading="lazy" width="1400" data-k="${k}">`).join('')}</div><span class="cap">Screenshots · ${esc(p.t.split(' — ')[0].split(' Ticketing')[0])}</span></div>`:`<div class="v v${p.v}" style="--c1:${p.c1};--c2:${p.c2}"><div class="art"></div><div class="bar3"></div>${DECO[p.v]}<i class="big-i fa-solid ${p.ic}"></i><b class="big-n">${pad(i+1)}</b><span class="cap">Screenshots coming soon</span></div>`;
+const kstHTML=p=>p.kst?`<div class="kst">${p.kst.map(k=>`<div><b>${k[0]}</b>${k[1]}</div>`).join('')}</div>`:'';
+$('#fl').innerHTML=FILT.map((f,i)=>`<button type="button" data-f="${f[0]}" class="${i?'':'on'}" aria-pressed="${!i}">${f[1]}</button>`).join('');
+function drawList(){const v=vis();$('#pxList').innerHTML=P.map((p,i)=>`<li data-i="${i}" class="${i===pi?'on':''} ${v.includes(i)?'':'gone'} ${ph&&p.tech.includes(ph)?'hit':''} ${cmpSel.includes(i)?'picked':''}"><button type="button" aria-current="${i===pi}"><span class="n">${pad(i+1)}</span><h3>${esc(p.t)}</h3><small>${esc(p.cat)}</small></button><button type="button" class="pick" data-pick="${i}" aria-pressed="${cmpSel.includes(i)}" aria-label="${cmpSel.includes(i)?'Remove':'Add'} ${esc(p.t)} ${cmpSel.includes(i)?'from':'to'} comparison"><i class="fa-solid ${cmpSel.includes(i)?'fa-check':'fa-plus'}"></i></button></li>`).join('');
+  $('#pxEmpty').hidden=v.length>0;const pos=v.indexOf(pi);$('#pxCnt').textContent=v.length?pad(pos+1)+' / '+pad(v.length):'00 / 00'}
+function showP(i){if(i===undefined)return;pi=i;const p=P[i];drawList();const st=$('#pxStage');st.innerHTML=viewHTML(p,i);st.setAttribute('role','button');st.setAttribute('tabindex','0');st.setAttribute('aria-label','Open presentation: '+p.t);
+  $('#pxInfo').innerHTML=`<span class="tag">${esc(p.tag)}</span><h3>${esc(p.t)}</h3><p>${esc(p.d)}</p>${kstHTML(p)}<div class="tech" aria-label="Technologies — select one to see other projects that use it">${p.tech.map(t=>`<button type="button" data-t="${esc(t)}" class="${t===ph?'on':''}" aria-pressed="${t===ph}">${esc(t)}</button>`).join('')}</div><div class="px-act"><button class="btn" type="button" data-open="${i}" data-mag><i class="fa-solid fa-expand"></i> Open presentation</button>${p.link?`<a class="btn btn-o" href="${p.link[0]}" target="_blank" rel="noopener" data-mag><i class="fa-solid ${p.link[2]}"></i> ${p.link[1]}</a>`:''}<span class="px-m"><i class="fa-solid fa-layer-group"></i> ${esc(p.cat)}</span></div>`}
+$('#pxList').onclick=e=>{const k=e.target.closest('[data-pick]');if(k){const i=+k.dataset.pick;if(cmpSel.includes(i))cmpSel=cmpSel.filter(x=>x!==i);else if(cmpSel.length>=3){toast('You can compare up to 3 projects at a time.');return}else cmpSel.push(i);cmpUpd();drawList();const nb=$(`#pxList [data-pick="${i}"]`);nb&&nb.focus();return}const l=e.target.closest('li');if(l){showP(+l.dataset.i);beep(700,.05,.02,'square')}};
+$('#fl').onclick=e=>{const b=e.target.closest('button');if(!b)return;pf=b.dataset.f;$$('#fl button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});const v=vis();showP(v.includes(pi)?pi:v[0]);if(!v.length)drawList()};
+pq.oninput=()=>{ps=pq.value.trim();const v=vis();if(v.length)showP(v.includes(pi)?pi:v[0]);else drawList()};
+const stepPx=d=>{const v=vis();if(!v.length)return;const n=v[(Math.max(0,v.indexOf(pi))+d+v.length)%v.length];showP(n)};
+$('#pxPrev').onclick=()=>stepPx(-1);$('#pxNext').onclick=()=>stepPx(1);
+$('#pxInfo').onclick=e=>{const t=e.target.closest('.tech button');if(t){ph=ph===t.dataset.t?null:t.dataset.t;$$('.tech button').forEach(x=>{x.classList.toggle('on',x.dataset.t===ph);x.setAttribute('aria-pressed',x.dataset.t===ph)});drawList();toast(ph?'Also uses '+ph+': '+P.filter(p=>p.tech.includes(ph)).length+' project(s) marked':'Technology filter cleared');return}const o=e.target.closest('[data-open]');if(o)openPres(+o.dataset.open,e)};
+$('#pxStage').onclick=e=>openPres(pi,e);$('#pxStage').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPres(pi,e)}};
+showP(0);
+/* compare */
+function cmpUpd(){$('#cmpN').textContent=cmpSel.length?cmpSel.length+' selected'+(cmpSel.length<2?' — pick at least one more':''):'Pick 2 or 3 projects';$('#cmpGo').disabled=cmpSel.length<2}
+$('#cmpT').onclick=()=>{cmpOn=!cmpOn;$('#cmpT').setAttribute('aria-pressed',cmpOn);$('#pxList').classList.toggle('cmp-on',cmpOn);$('#cmpBar').hidden=!cmpOn;if(!cmpOn)cmpSel=[];cmpUpd();drawList();if(cmpOn)toast('Compare mode: use the + buttons to pick up to 3 projects.')};
+$('#cmpClr').onclick=()=>{cmpSel=[];cmpUpd();drawList()};
+$('#cmpGo').onclick=()=>{if(cmpSel.length<2)return;const L=cmpSel.map(i=>P[i]);
+  const rows=[['Category',p=>esc(p.cat)],['Project type',p=>esc(p.tag)],['Group',p=>esc(FL[p.f])],['Technologies',p=>p.tech.map(esc).join(', ')],['Key numbers',p=>p.kst?p.kst.map(k=>esc(k[0]+' '+k[1].toLowerCase())).join(', '):'Not listed'],['Screenshots',p=>p.shots?p.shots.length+' available':'Screenshots coming soon'],['Live link',p=>p.link?`<a href="${p.link[0]}" target="_blank" rel="noopener">${esc(p.link[1])}</a>`:'No live link listed'],['Description',p=>esc(p.d)]];
+  const t=$('#cmpT2');t.style.setProperty('--n',L.length);
+  t.innerHTML='<div class="corner fr"></div>'+L.map(p=>`<div class="hd fr">${esc(p.t)}</div>`).join('')+rows.map(r=>`<div class="k">${r[0]}</div>`+L.map(p=>`<div>${r[1](p)}</div>`).join('')).join('');CMP.show($('#cmpGo'))};
+/* presentation */
+const pres=$('#pres');let presT,presFocus;
+function drawPres(i){presI=i;const p=P[i];$('#presIn').innerHTML=`<div class="pres-top"><span class="lbl">Project ${pad(i+1)} of ${pad(P.length)}</span><div class="cta"><button class="ib" type="button" id="prP" aria-label="Previous project"><i class="fa-solid fa-arrow-left"></i></button><button class="ib" type="button" id="prN" aria-label="Next project"><i class="fa-solid fa-arrow-right"></i></button><button class="btn btn-s btn-o" type="button" id="prX">Close <kbd>Esc</kbd></button></div></div><div class="pres-v">${viewHTML(p,i)}</div><div class="pres-d"><span class="tag lbl">${esc(p.tag)}</span><h2>${esc(p.t)}</h2><p>${esc(p.d)}</p>${kstHTML(p)}<ul class="chips">${p.tech.map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p class="px-m"><i class="fa-solid fa-layer-group"></i> ${esc(p.cat)} &nbsp;·&nbsp; <i class="fa-solid fa-user"></i> Developed by Jena Benisse Redondo</p><div class="cta">${p.link?`<a class="btn" href="${p.link[0]}" target="_blank" rel="noopener"><i class="fa-solid ${p.link[2]}"></i> ${p.link[1]}</a>`:''}<a class="btn btn-o" href="#contact" id="prC"><i class="fa-solid fa-paper-plane"></i> Discuss this project</a></div></div>`;
+  $('#prX').onclick=()=>closePres();$('#prP').onclick=()=>stepP(-1);$('#prN').onclick=()=>stepP(1);
+  if(p.shots){$$('.pres-v .shots img').forEach(im=>im.onclick=()=>openL(p.shots.map((s,k)=>({u:s,t:p.t+' — '+p.caps[k],k:'img'})),+im.dataset.k))}}
+const stepP=d=>{const all=P.map((p,i)=>i),n=all[(presI+d+all.length)%all.length];drawPres(n);if(vis().includes(n))showP(n);$('#prX').focus()};
+function openPres(i,e){presFocus=document.activeElement;const x=e&&e.clientX?e.clientX:innerWidth/2,y=e&&e.clientY?e.clientY:innerHeight/2;pres.style.setProperty('--ox',x+'px');pres.style.setProperty('--oy',y+'px');drawPres(i);clearTimeout(presT);pres.hidden=false;void pres.offsetWidth;if(!pres.classList.contains('open'))lock(1);pres.classList.add('open');setTimeout(()=>$('#prX')&&$('#prX').focus(),RM?0:500);beep(500,.2,.04,'sawtooth',300)}
+function closePres(instant,nofocus){if(!pres.classList.contains('open'))return;if(instant)pres.style.transition='none';pres.classList.remove('open');lock(0);presT=setTimeout(()=>{pres.hidden=true;pres.style.transition=''},instant?30:850);if(!nofocus&&presFocus&&document.contains(presFocus))presFocus.focus()}
+
+/* ---------- 12 · certificates ---------- */
+const C=[["HTML Essentials","Web Development","Cisco Networking Academy · August 11, 2026","pdf","Completed the HTML Essentials course through Cisco Networking Academy in collaboration with JS Institute. The course covered structured HTML documents, semantic elements, multimedia, hyperlinks, forms, accessibility, and the relationship between HTML, CSS, and JavaScript.",["HTML","Web Structure","Accessibility"],"Web"],
+["Network Addressing & Basic Troubleshooting","Networking","Cisco Networking Academy · April 13, 2026","pdf","Completed training focused on physical and data-link layer communication, network media, IPv6 addressing, routers, switches, and troubleshooting basic network connectivity issues.",["IPv6","Routing","Troubleshooting"],"Networking"],
+["Networking Basics","Networking","Cisco Networking Academy · March 29, 2026","pdf","Completed Networking Basics covering network communication, network types, components, standards and protocols, Ethernet communication, IPv4 and IPv6, routers, connectivity testing, and wireless router configuration.",["IPv4","IPv6","Ethernet"],"Networking"],
+["Networking Devices & Basic Configuration","Network Configuration","Cisco Networking Academy · April 8, 2026","pdf","Completed coursework covering hierarchical network design, number systems, Ethernet switching, IPv4 subnetting, DNS, DHCP, transport-layer protocols, Cisco IOS, and building basic computer networks using Cisco devices.",["Cisco IOS","Subnetting","DHCP"],"Networking"],
+["Network Support & Security","Network Support","Cisco Networking Academy · April 13, 2026","pdf","Completed training focused on effective network troubleshooting, help desk best practices, common network threats, vulnerabilities, endpoint attacks, and secure user access on a network.",["Troubleshooting","Security","Help Desk"],"Networking"],
+["Network Technician Career Path","Career Path","Cisco Networking Academy · April 22, 2026","pdf","Completed the Network Technician Career Path covering network standards, Ethernet, IPv4 and IPv6, wireless configuration, switching, DNS and DHCP, transport protocols, routing, troubleshooting, and secure network access.",["Networking","Routing","Security"],"Networking"],
+["Bridging Business and Technology for the Next Generation","IT Week Seminar","IT Week 2026, La Consolacion College Tanauan · March 21, 2026","jpg","Certificate of Participation for the seminar held in celebration of IT Week 2026 at La Consolacion College Tanauan. The seminar explored how business processes and emerging technology intersect, encouraging IT students to connect technical skills with real-world business needs.",["IT Week 2026","Business & Technology","Seminar"],"Events"],
+["Design, Build, Innovate: The Robotics Experience","Robotics Workshop","ICT Week 2026, La Consolacion College Tanauan · 2026","jpg","Certificate of Participation for a robotics workshop presented by First Eduspec Inc. in partnership with La Consolacion College Tanauan during LCCT ICT Week 2026. The workshop introduced hands-on robotics concepts, giving students the chance to explore robotics design and building beyond regular web and database coursework.",["Robotics","Hands-on Workshop","ICT Week 2026"],"Events"]];
+const cu=i=>`certificates/certificate-${i+1}.${C[i][3]}`,cItems=()=>C.map((x,i)=>({u:cu(i),t:x[0],k:x[3]==='pdf'?'pdf':'img'}));let cs=0,cf='All',cs2='';const cq=$('#cq');
+$('#ctf').innerHTML=['All','Web','Networking','Events'].map((c,i)=>`<button type="button" class="${i?'':'on'}" data-f="${c}" aria-pressed="${!i}">${c==='All'?'All 8 certificates':c}</button>`).join('');
+$('#strip').innerHTML=C.map((c,i)=>`<button type="button" role="option" aria-selected="false" data-i="${i}" aria-label="${pad(i+1)} ${esc(c[0])}"><b>${pad(i+1)}</b><img src="certificates/thumbs/t${i+1}.jpg" alt="" loading="lazy" width="660" height="510"></button>`).join('');
+const cVis=()=>C.map((c,i)=>i).filter(i=>(cf==='All'||C[i][6]===cf)&&(!cs2||matches([C[i][0],C[i][1],C[i][2],C[i][4],C[i][5].join(' ')].join(' '),cs2)));
+function showC(i,fresh){if(i===undefined)return;cs=i;const c=C[i],im=$('#cgImg');im.src=`certificates/thumbs/t${i+1}.jpg`;im.alt=c[0]+' certificate';im.classList.remove('sw');void im.offsetWidth;if(fresh!==false&&!RM)im.classList.add('sw');$('#cgNo').textContent=pad(i+1);
+  $('#cgMeta').innerHTML=`<p class="cat">${esc(c[1])}</p><h3>${esc(c[0])}</h3><span class="is">${esc(c[2])}</span><p class="d">${esc(c[4])}</p><ul class="chips">${c[5].map(t=>`<li>${esc(t)}</li>`).join('')}</ul><div class="cta"><button class="btn" type="button" data-cv="${i}" data-mag><i class="fa-solid fa-eye"></i> View</button><a class="btn btn-o" href="${cu(i)}" download data-mag><i class="fa-solid fa-download"></i> Download</a><a class="btn btn-o" href="${cu(i)}" target="_blank" rel="noopener" data-mag><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</a></div>`;
+  $$('#strip button').forEach(b=>{const on=+b.dataset.i===i;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1});const sel=$(`#strip button[data-i="${i}"]`);if(sel&&sel.scrollIntoView&&fresh!==false)sel.scrollIntoView({block:'nearest',inline:'center',behavior:RM?'auto':'smooth'})}
+function cApply(){const v=cVis();$$('#strip button').forEach(x=>x.classList.toggle('gone',!v.includes(+x.dataset.i)));$('#cEmpty').hidden=v.length>0;$('#cgal').classList.toggle('gone',!v.length);if(v.length&&!v.includes(cs))showC(v[0])}
+const stepC=d=>{const v=cVis();if(!v.length)return;showC(v[(Math.max(0,v.indexOf(cs))+d+v.length)%v.length])};
+$('#cgPrev').onclick=()=>stepC(-1);$('#cgNext').onclick=()=>stepC(1);
+$('#strip').onclick=e=>{const b=e.target.closest('button');if(b)showC(+b.dataset.i)};
+$('#strip').onkeydown=e=>{const v=cVis(),p=v.indexOf(cs);let n=null;if(e.key==='ArrowRight')n=v[Math.min(v.length-1,p+1)];if(e.key==='ArrowLeft')n=v[Math.max(0,p-1)];if(n!==null&&n!==undefined){e.preventDefault();showC(n);$(`#strip button[data-i="${n}"]`).focus()}};
+$('#ctf').onclick=e=>{const b=e.target.closest('button');if(!b)return;cf=b.dataset.f;$$('#ctf button').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b)});cApply()};
+cq.oninput=()=>{cs2=cq.value.trim();cApply()};
+$('#cgPaper').onclick=()=>openL(cItems(),cs,$('#cgPaper'));$('#cgMeta').onclick=e=>{const v=e.target.closest('[data-cv]');if(v)openL(cItems(),+v.dataset.cv,v)};
+$('#cgPaper').addEventListener('pointermove',e=>{if(!FINE||RM)return;const r=e.currentTarget.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;e.currentTarget.style.transform=`rotateY(${x*10}deg) rotateX(${-y*10}deg)`});$('#cgPaper').addEventListener('pointerleave',e=>e.currentTarget.style.transform='');
+showC(0,false);
+
+/* ---------- 13 · viewer: documents + zoomable images ---------- */
+const lb=$('#lb'),li=$('#li'),lst=$('#lst');let L=[],lci=0,lbFocus,lbT,Z={z:1,x:0,y:0};
+function zApply(){const bw=li.offsetWidth,bh=li.offsetHeight,mx=Math.max(0,(bw*Z.z-lst.clientWidth)/2),my=Math.max(0,(bh*Z.z-lst.clientHeight)/2);Z.x=Math.max(-mx,Math.min(mx,Z.x));Z.y=Math.max(-my,Math.min(my,Z.y));li.style.setProperty('--z',Z.z);li.style.setProperty('--tx',Z.x+'px');li.style.setProperty('--ty',Z.y+'px');li.classList.toggle('zoomed',Z.z>1);$('#lzr').textContent=Math.round(Z.z*100)+'%'}
+function zSet(z){Z.z=Math.max(1,Math.min(5,z));if(Z.z===1){Z.x=0;Z.y=0}zApply()}
+const zReset=()=>{Z={z:1,x:0,y:0};zApply()};
+$('#lzi').onclick=()=>zSet(Z.z*1.3);$('#lzo').onclick=()=>zSet(Z.z/1.3);$('#lzr').onclick=zReset;
+lst.addEventListener('wheel',e=>{if(li.hidden)return;e.preventDefault();zSet(Z.z*(e.deltaY<0?1.15:1/1.15))},{passive:false});
+li.addEventListener('dblclick',()=>Z.z>1?zReset():zSet(2.5));
+const pts=new Map();let pinch=0,pan=null;
+lst.addEventListener('pointerdown',e=>{if(li.hidden)return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){const [a,b]=[...pts.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y);pan=null}else if(Z.z>1){pan={x:e.clientX,y:e.clientY,ox:Z.x,oy:Z.y};li.classList.add('panning')}});
+lst.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===2){const [a,b]=[...pts.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch)zSet(Z.z*d/pinch);pinch=d}else if(pan){Z.x=pan.ox+e.clientX-pan.x;Z.y=pan.oy+e.clientY-pan.y;zApply()}});
+const pend=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;if(!pts.size){pan=null;li.classList.remove('panning')}};lst.addEventListener('pointerup',pend);lst.addEventListener('pointercancel',pend);
+function showL(i){lci=(i+L.length)%L.length;const it=L[lci],pdf=it.k==='pdf';$('#lt').textContent=it.t;$('#lcnt').textContent=L.length>1?(lci+1)+' / '+L.length:'';const d=$('#ld2');d.href=it.u;if(it.dl)d.setAttribute('download',it.dl);else d.setAttribute('download','');$('#lo').href=it.u;$('#lf').hidden=!pdf;li.hidden=pdf;lb.classList.toggle('is-img',!pdf);zReset();if(pdf){$('#lf').src=it.u}else{li.src=it.u;li.alt=it.t;$('#lf').src='about:blank'}}
+function openL(list,i,from){L=list;clearTimeout(lbT);lbFocus=from||document.activeElement;showL(i);lb.hidden=false;void lb.offsetWidth;if(!lb.classList.contains('open'))lock(1);lb.classList.add('open');lb.classList.toggle('multi',L.length>1);$('#lc').focus();beep(600,.12,.04,'triangle',200)}
+function closeL(instant){if(!lb.classList.contains('open'))return;lb.classList.remove('open');lock(0);lbT=setTimeout(()=>{lb.hidden=true;$('#lf').src='about:blank'},instant?0:360);if(!instant&&lbFocus&&lbFocus.focus&&document.contains(lbFocus))lbFocus.focus()}
+$('#lc').onclick=()=>closeL();lb.onclick=e=>{if(e.target===lb)closeL()};$('#lbp').onclick=()=>showL(lci-1);$('#lbn').onclick=()=>showL(lci+1);
+li.addEventListener('load',zApply);
+document.addEventListener('click',e=>{const v=e.target.closest('[data-v]');if(v){const[u,t,k]=v.dataset.v.split('|');openL([u===CV.u?CV:{u,t,k}],0,v);return}
+  const z=e.target.closest('img[data-zoom]');if(z){const all=$$('img[data-zoom]');openL(all.map(im=>({u:im.getAttribute('src'),t:im.dataset.zoom,k:'img'})),all.indexOf(z),z)}});
+
+/* ---------- 14 · CV live preview ---------- */
+$('#cvTog').onclick=()=>{if(navigator.pdfViewerEnabled===false){openL([CV],0,$('#cvTog'));toast('Your browser opens PDFs in the viewer instead.');return}
+  const box=$('#cvPrev'),open=box.hidden;box.hidden=!open;$('#cvTog').setAttribute('aria-expanded',open);$('#cvTog span').textContent=open?'Hide preview':'Live preview';
+  if(open){const f=$('#cvFrame');if(!f.getAttribute('src'))f.setAttribute('src',CV.u+'#view=FitH');setTimeout(()=>box.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}),60)}};
+
+/* ---------- 15 · FAQ: animated, searchable accordion ---------- */
+const FQ=$$('#faq-l details');
+function faqToggle(d,force){const open=force!==undefined?force:!d.open,a=$('.fa',d);if(open===d.open&&!d.classList.contains('closing'))return;a.getAnimations().forEach(x=>x.cancel());d.classList.remove('closing');
+  if(RM){d.open=open;faqAllState();return}
+  if(open){d.open=true;const h=a.offsetHeight;a.animate([{height:'0px',opacity:0},{height:h+'px',opacity:1}],{duration:380,easing:'cubic-bezier(.2,.8,.2,1)'})}
+  else{d.classList.add('closing');const h=a.offsetHeight,an=a.animate([{height:h+'px',opacity:1},{height:'0px',opacity:0}],{duration:300,easing:'cubic-bezier(.2,.8,.2,1)'});an.onfinish=()=>{d.open=false;d.classList.remove('closing');faqAllState()}}
+  faqAllState()}
+function faqAllState(){const vis2=FQ.filter(d=>!d.classList.contains('gone')),all=vis2.length&&vis2.every(d=>d.open&&!d.classList.contains('closing'));const b=$('#faqAll');b.setAttribute('aria-pressed',all);$('span',b).textContent=all?'Collapse all':'Expand all'}
+$('#faq-l').addEventListener('click',e=>{const s=e.target.closest('summary');if(!s)return;e.preventDefault();faqToggle(s.parentElement)});
+$('#faq-l').addEventListener('keydown',e=>{const s=e.target.closest&&e.target.closest('summary');if(!s)return;const vs=FQ.filter(d=>!d.classList.contains('gone')).map(d=>$('summary',d)),i=vs.indexOf(s);if(e.key==='ArrowDown'&&vs[i+1]){vs[i+1].focus();e.preventDefault()}else if(e.key==='ArrowUp'&&vs[i-1]){vs[i-1].focus();e.preventDefault()}else if(e.key==='Home'){vs[0].focus();e.preventDefault()}else if(e.key==='End'){vs[vs.length-1].focus();e.preventDefault()}});
+$('#faqAll').onclick=()=>{const vs=FQ.filter(d=>!d.classList.contains('gone')),all=vs.every(d=>d.open);vs.forEach(d=>faqToggle(d,!all))};
+$('#fq').oninput=()=>{const q=$('#fq').value.trim();let n=0,last=null;FQ.forEach(d=>{const hit=!q||matches(d.textContent,q);d.classList.toggle('gone',!hit);if(hit){n++;last=d}});$('#fEmpty').hidden=n>0;if(q&&n===1)faqToggle(last,true);faqAllState()};
+function faqOpen(i){go('faq');setTimeout(()=>{$('#fq').value='';$('#fq').oninput();const d=FQ[i];faqToggle(d,true);d.scrollIntoView({behavior:RM?'auto':'smooth',block:'center'});$('summary',d).focus({preventScroll:true})},RM?80:1000)}
+faqAllState();
+
+/* ---------- 16 · contact ---------- */
+function confetti(b){if(RM||!b)return;const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2300';c.width=innerWidth;c.height=innerHeight;document.body.append(c);const x=c.getContext('2d'),r=b.getBoundingClientRect(),cols=['#34d17f','#e8f3e6','#8ee86a','#8a9a3f'],Pt=Array.from({length:80},()=>({x:r.left+r.width/2,y:r.top,vx:(Math.random()-.5)*12,vy:-Math.random()*13-3,s:Math.random()*6+3,c:cols[Math.random()*4|0],a:1}));(function f(){x.clearRect(0,0,c.width,c.height);let al=0;Pt.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.a-=.012;if(p.a>0){al++;x.globalAlpha=p.a;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s*.6)}});al?requestAnimationFrame(f):c.remove()})()}
+$('#copy').onclick=copyEmail;$$('[data-act=vcard]').forEach(b=>b.onclick=vcard);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copyText(b.dataset.copy,b.dataset.what||'Text',b)});
+$('#cf').onsubmit=e=>{e.preventDefault();const n=$('#fn'),m=$('#fe'),g=$('#fm');let ok=1;[n,m,g].forEach(i=>{const bad=!i.value.trim()||(i===m&&!/^\S+@\S+\.\S+$/.test(i.value));i.classList.toggle('bad',bad);i.setAttribute('aria-invalid',bad);if(bad)ok=0});if(!ok){toast('Please complete the highlighted fields');return}
+  const sub=encodeURIComponent('Portfolio inquiry: '+$('#ft').value+' — '+n.value.trim()),body=encodeURIComponent('Hi Jena,\n\n'+g.value.trim()+'\n\nI’m interested in: '+$('#ft').value+'\n\nFrom: '+n.value.trim()+' ('+m.value.trim()+')');location.href='mailto:'+EMAIL+'?subject='+sub+'&body='+body;toast('Opening your email app…')};
+
+/* ---------- 17 · discovery map ---------- */
+const mapStage=$('#mapStage'),mapSvg=$('#mapLines');let mapPos=[],mapSats=[],mapOpenId=null;
+function satsFor(id){if(id==='projects')return P.map((p,i)=>({l:p.t,ic:'fa-laptop-code',run:()=>{go('projects');setTimeout(()=>{pq.value='';ps='';pf='all';$$('#fl button').forEach((x,k)=>{x.classList.toggle('on',k===0);x.setAttribute('aria-pressed',k===0)});showP(i);openPres(i)},RM?60:900)}}));
+  if(id==='certificates')return C.map((c,i)=>({l:c[0],ic:'fa-award',run:()=>{go('certificates');setTimeout(()=>{cq.value='';cs2='';cf='All';$$('#ctf button').forEach((x,k)=>x.classList.toggle('on',k===0));cApply();showC(i);openL(cItems(),i,$('#cgPaper'))},RM?60:900)}}));
+  if(id==='skills')return S.map(s=>({l:s[0],ic:s[2],run:()=>{go('skills');setTimeout(()=>{skF=s[1];skS=s[0];skRender()},RM?60:900)}}));
+  if(id==='faq')return FQ.map((d,i)=>({l:$('summary',d).textContent,ic:'fa-solid fa-circle-question',run:()=>faqOpen(i)}));
+  return[]}
+function buildMap(){mapOpenId=null;const w=mapStage.clientWidth||1000,h=mapStage.clientHeight||600,wide=w/h>1.05;
+  const cols=wide?[11,37,63,89]:[17,50,83],rows=wide?[20,50,80]:[11,37,63,89],n=RECS.length;mapPos=[];
+  RECS.forEach((r,i)=>{const row=Math.floor(i/cols.length),k=i%cols.length,c=row%2?cols.length-1-k:k;mapPos.push([cols[c],rows[row]+(i%2?4:-4)])});
+  const d=mapPos.map((p,i)=>{if(!i)return`M${p[0]} ${p[1]}`;const q=mapPos[i-1],mx=(p[0]+q[0])/2,my=(p[1]+q[1])/2;return`Q${q[0]} ${q[1]} ${mx} ${my}`}).join(' ')+` T${mapPos[n-1][0]} ${mapPos[n-1][1]}`;
+  mapSvg.setAttribute('viewBox','0 0 100 100');mapSvg.innerHTML=`<path d="${d}"></path><g id="mapSatLines"></g>`;
+  $$('.mn',mapStage).forEach(x=>x.remove());
+  mapStage.insertAdjacentHTML('beforeend',RECS.map((r,i)=>`<button type="button" class="mn sec ${i===curI?'here':''}" data-id="${r[0]}" style="left:${mapPos[i][0]}%;top:${mapPos[i][1]}%" aria-label="${esc(r[1])}${satsFor(r[0]).length?' — select to show items, select again to open':''}" ${satsFor(r[0]).length?'aria-expanded="false"':''}><span class="dot"><b>${pad(i+1)}</b></span><span class="t">${esc(r[1])}</span></button>`).join(''));
+  $('#mapHint').textContent='Nothing selected yet.'}
+function mapSat(id){$$('.mn.sat',mapStage).forEach(x=>x.remove());$('#mapSatLines').innerHTML='';mapSats=[];$$('.mn.sec',mapStage).forEach(x=>{x.classList.remove('open');if(x.hasAttribute('aria-expanded'))x.setAttribute('aria-expanded','false')});if(!id)return;
+  const i=RECS.findIndex(r=>r[0]===id),list=satsFor(id),w=mapStage.clientWidth,h=mapStage.clientHeight,px=mapPos[i][0]/100*w,py=mapPos[i][1]/100*h,R=Math.min(190,Math.max(110,Math.min(w,h)*.3)),cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const sec=$(`.mn.sec[data-id="${id}"]`);sec.classList.add('open');sec.setAttribute('aria-expanded','true');
+  let html='',ln='';list.forEach((s,k)=>{const a=-Math.PI/2+k/list.length*Math.PI*2,rr=R*(list.length>9?1.1:1),x=cl((px+Math.cos(a)*rr)/w*100,5,95),y=cl((py+Math.sin(a)*rr)/h*100,6,94);mapSats.push(s);
+    ln+=`<line x1="${mapPos[i][0]}" y1="${mapPos[i][1]}" x2="${x}" y2="${y}"></line>`;html+=`<button type="button" class="mn sat" data-k="${k}" style="left:${x}%;top:${y}%" aria-label="${esc(s.l)}"><span class="dot"><i class="${s.ic.includes(' ')?s.ic:'fa-solid '+s.ic}"></i></span><span class="t">${esc(s.l)}</span></button>`});
+  $('#mapSatLines').innerHTML=ln;mapStage.insertAdjacentHTML('beforeend',html);void mapStage.offsetWidth;$$('.mn.sat',mapStage).forEach((x,k)=>setTimeout(()=>x.classList.add('show'),RM?0:k*45));
+  $('#mapHint').textContent=list.length+' from “'+RECS[i][1]+'”. Select one to open it, or select '+RECS[i][1]+' again to go to the section.'}
+mapStage.addEventListener('click',e=>{const b=e.target.closest('.mn');if(!b)return;
+  if(b.classList.contains('sat')){const s=mapSats[+b.dataset.k];MAP.hide(false,true);setTimeout(s.run,RM?30:400);return}
+  const id=b.dataset.id;if(satsFor(id).length&&mapOpenId!==id){mapOpenId=id;mapSat(id);return}
+  mapOpenId=null;MAP.hide(false,true);setTimeout(()=>go(id),RM?30:350)});
+const mapHover=e=>{const b=e.target.closest&&e.target.closest('.mn');if(!b)return;if(b.classList.contains('sec')){const r=RECS.find(x=>x[0]===b.dataset.id);if(!mapOpenId)$('#mapHint').textContent=r[1]+' — '+r[2]}else $('#mapHint').textContent=mapSats[+b.dataset.k].l};
+mapStage.addEventListener('mouseover',mapHover);mapStage.addEventListener('focusin',mapHover);
+$('#mapRand').onclick=()=>{const pool=[];['projects','certificates','skills','faq'].forEach(id=>satsFor(id).forEach(s=>pool.push(s)));const s=pool[Math.random()*pool.length|0];toast('Surprise: '+s.l);MAP.hide(false,true);setTimeout(s.run,RM?30:420)};
+let mapRz;addEventListener('resize',()=>{if(!MAP.open)return;clearTimeout(mapRz);mapRz=setTimeout(()=>{const o=mapOpenId;buildMap();if(o){mapOpenId=o;mapSat(o)}},150)});
+
+/* ---------- 18 · cursor · keyboard · easter eggs ---------- */
+if(FINE){const cur=$('#cur'),ring=$('.cur-ring',cur),dot=$('.cur-dot',cur),lab=$('#curl');let tx0=0,ty0=0,x=0,y=0;
+  addEventListener('mousemove',e=>{tx0=e.clientX;ty0=e.clientY;cur.classList.add('on');const t=e.target.closest&&e.target.closest('[data-cursor]');const big=e.target.closest&&e.target.closest('a,button,summary,input,select,textarea,[role=button],.ms-b');cur.classList.toggle('lab',!!t);cur.classList.toggle('big',!!big&&!t);lab.textContent=t?t.dataset.cursor:'';
+    const m=e.target.closest&&e.target.closest('[data-mag]');if(m&&!RM){const r=m.getBoundingClientRect();m.style.setProperty('--mx',((e.clientX-r.left-r.width/2)*.2)+'px');m.style.setProperty('--my',((e.clientY-r.top-r.height/2)*.3)+'px')}},{passive:true});
+  document.addEventListener('mouseout',e=>{const m=e.target.closest&&e.target.closest('[data-mag]');if(m&&!m.contains(e.relatedTarget)){m.style.setProperty('--mx','0px');m.style.setProperty('--my','0px')}});
+  document.addEventListener('mouseleave',()=>cur.classList.remove('on'));
+  (function f(){x+=(tx0-x)*.2;y+=(ty0-y)*.2;dot.style.transform=`translate(${tx0}px,${ty0}px)`;ring.style.transform=`translate(${x}px,${y}px)`;requestAnimationFrame(f)})()}
+/* secret garden: leaves fall (Konami code, or tap the JBR mark five times) */
+const bl=$('#bloom'),bx=bl.getContext('2d');let blRun=false;
+function bloom(){if(RM){toast('You found the secret garden. Thanks for exploring!');return}toast('You found the secret garden. Thanks for exploring!');bl.width=innerWidth;bl.height=innerHeight;const cols=['#34d17f','#8ee86a','#8a9a3f','#cfeedd','#1fa46a'],lv=Array.from({length:110},()=>({x:Math.random()*bl.width,y:-Math.random()*bl.height*.6,s:7+Math.random()*12,v:1.2+Math.random()*2.6,sw:Math.random()*6.28,r:Math.random()*6.28,c:cols[Math.random()*5|0]}));if(blRun)return;blRun=true;let T=0;
+  (function f(){T++;bx.clearRect(0,0,bl.width,bl.height);let alive=0;lv.forEach(l=>{l.y+=l.v;l.sw+=.04;l.x+=Math.sin(l.sw)*1.4;l.r+=.03;if(l.y<bl.height+30){alive++;bx.save();bx.translate(l.x,l.y);bx.rotate(l.r);bx.fillStyle=l.c;bx.beginPath();bx.moveTo(0,-l.s);bx.quadraticCurveTo(l.s*.8,0,0,l.s);bx.quadraticCurveTo(-l.s*.8,0,0,-l.s);bx.fill();bx.restore()}});if(alive&&T<700)requestAnimationFrame(f);else{bx.clearRect(0,0,bl.width,bl.height);blRun=false}})()}
+let taps=0,tapT;$('#brand').addEventListener('click',()=>{taps++;clearTimeout(tapT);tapT=setTimeout(()=>taps=0,2000);if(taps>=5){taps=0;bloom()}});
+const KON=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];let kp=0;
+function isTyping(t){return t&&(/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t.isContentEditable)}
+addEventListener('keydown',e=>{const k=e.key;
+  if(!introDone){if(k==='Escape'||k==='Enter')endIntro();return}
+  if(lb.classList.contains('open')){if(k==='Escape')closeL();else if(L.length>1&&k==='ArrowLeft')showL(lci-1);else if(L.length>1&&k==='ArrowRight')showL(lci+1);else if(!li.hidden&&(k==='+'||k==='='))zSet(Z.z*1.3);else if(!li.hidden&&(k==='-'||k==='_'))zSet(Z.z/1.3);else if(!li.hidden&&k==='0')zReset();else trap(e,lb);return}
+  if(CMP.open){if(k==='Escape')CMP.hide();else trap(e,$('#cmp'));return}
+  if(pres.classList.contains('open')){if(k==='Escape')closePres();else if(k==='ArrowLeft')stepP(-1);else if(k==='ArrowRight')stepP(1);else trap(e,pres);return}
+  if(MAP.open){if(k==='Escape')MAP.hide();else if(k==='Tab')trap(e,$('#map'));return}
+  if(IDX.open){if(k==='Escape'){IDX.hide();return}if(k==='Tab'){trap(e,$('#idx'));return}
+    const t=$$('#idxGrid li:not(.gone) a,#idxRes button,#idxAct button:not(.gone)').filter(x=>x.offsetParent!==null),i=t.indexOf(document.activeElement),inp=document.activeElement===$('#idxq');
+    if(k==='Enter'&&inp){e.preventDefault();const g=$('#idxRes button')||(!$('#idxq').value.trim()&&t[0]);g&&g.click();return}
+    if(k==='ArrowDown'||k==='ArrowRight'){if(k==='ArrowRight'&&inp)return;const n=inp?0:i+1;if(t[n]){t[n].focus();e.preventDefault()}}
+    else if(k==='ArrowUp'||k==='ArrowLeft'){if(k==='ArrowLeft'&&inp)return;if(i<=0){$('#idxq').focus();e.preventDefault()}else{t[i-1].focus();e.preventDefault()}}
+    return}
+  if((e.ctrlKey||e.metaKey)&&k.toLowerCase()==='k'){e.preventDefault();IDX.show(idxb);return}
+  if(e.ctrlKey||e.metaKey||e.altKey||isTyping(e.target))return;
+  if(k===KON[kp]||k.toLowerCase()===KON[kp]){kp++;if(kp===KON.length){kp=0;bloom()}}else kp=(k===KON[0])?1:0;
+  if(k==='/'){e.preventDefault();IDX.show(idxb)}else if(k==='i'||k==='I')IDX.show(idxb);else if(k==='g'||k==='G')MAP.show($('#mapB'));else if(k==='[')jump(-1);else if(k===']')jump(1);else if(k==='t'||k==='T')flip();else if(k==='m'||k==='M')toggleSound();
+  else if(/^[0-9]$/.test(k)){const n=k==='0'?9:+k-1;if(RECS[n])go(RECS[n][0])}});
+
+/* ---------- 19 · init ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');io.unobserve(e.target);if(e.target.id==='ledger')$$('[data-n]',e.target).forEach(countUp);if(e.target.classList.contains('dos'))typeTerm()}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+$$('[data-split]').forEach(h=>{const t=h.textContent.trim();h.setAttribute('aria-label',t);let i=0;h.innerHTML=t.split(/\s+/).map(w=>`<span class="wd" aria-hidden="true">${[...w].map(c=>`<span class="ch" style="--i:${i++}">${esc(c)}</span>`).join('')}</span>`).join('')});
+$$('.rv,.rt,#ledger').forEach(e=>io.observe(e));
+if(!('IntersectionObserver'in window))$$('.rv,.rt').forEach(e=>e.classList.add('in'));
+buildEntries();setMode('calm',root.classList.contains('calm'),true);setMode('comfy',root.classList.contains('comfy'),true);
+setTheme(root.dataset.theme,false);applyAcc();sizeField();fieldColor();requestAnimationFrame(loopField);setCur(0);onScroll();
+runIntro();
+if(introDone&&location.hash&&document.getElementById(location.hash.slice(1)))addEventListener('load',()=>setTimeout(()=>scrollTo({top:topOf(document.getElementById(location.hash.slice(1))),behavior:'instant'}),80));
+})();
